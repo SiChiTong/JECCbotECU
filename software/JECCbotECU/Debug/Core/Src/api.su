@@ -1,0 +1,2 @@
+api.c:15:6:apiInit	16	static
+api.c:25:6:apiDoInstruction	64	dynamic
