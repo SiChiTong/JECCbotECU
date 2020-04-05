@@ -14,9 +14,7 @@ Comment3 ""
 Comment4 "This documentation describes Open Hardware and is licensed under the CERN OHL v. 1.2."
 $EndDescr
 Text Notes 500  650  0    47   ~ 0
-Copyright generationmake 2019\nsee full project documentation at https://github.com/generationmake/HighPowerMotorFeatherWing
-Text Notes 7000 6900 0    43   ~ 0
-You may redistribute and modify this documentation under the terms of the CERN OHL v.1.2. (http://ohwr.org/cernohl). \nThis documentation is distributed WITHOUT ANY EXPRESS OR IMPLIED WARRANTY, INCLUDING OF MERCHANTABILITY, SATISFACTORY \nQUALITY AND FITNESS FOR A PARTICULAR PURPOSE. Please see the CERN OHL v.1.2  for applicable conditions
+JECCbot ECU 
 Text Label 7900 3700 0    60   ~ 0
 INH12
 Text Label 7900 3800 0    60   ~ 0
