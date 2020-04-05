@@ -23,28 +23,12 @@ Text Label 7900 3800 0    60   ~ 0
 PWM4
 Text Label 7900 3600 0    60   ~ 0
 INH34
-Wire Wire Line
-	8450 3600 7800 3600
-Wire Wire Line
-	8450 3700 7800 3700
-Wire Wire Line
-	1350 3300 2000 3300
-Wire Wire Line
-	1350 3200 2000 3200
-Wire Wire Line
-	8450 3900 7800 3900
-Wire Wire Line
-	8450 3800 7800 3800
 Text Label 7900 3900 0    60   ~ 0
 PWM3
 Text Label 1900 3200 2    60   ~ 0
 PWM2
 Text Label 1900 3300 2    60   ~ 0
 PWM1
-Wire Wire Line
-	1350 3800 2000 3800
-Wire Wire Line
-	1350 3900 2000 3900
 Text Label 1900 3800 2    60   ~ 0
 I2C_SCL
 Text Label 1900 3900 2    60   ~ 0
@@ -65,18 +49,10 @@ Text GLabel 8450 3700 2    60   Output ~ 0
 INH12
 Text GLabel 8450 3600 2    60   Output ~ 0
 INH34
-Text Label 1550 1900 0    60   ~ 0
-NRST
-Wire Wire Line
-	1250 2800 2000 2800
 Text GLabel 1250 2800 0    60   Input ~ 0
 EM_STOP_D
 Text Label 1300 2800 0    60   ~ 0
 EM_STOP_D
-Wire Wire Line
-	8550 3300 7800 3300
-Wire Wire Line
-	1500 1900 2000 1900
 Text Label 8500 3300 2    60   ~ 0
 VIN_MEAS
 $Comp
@@ -97,12 +73,8 @@ Wire Wire Line
 Wire Wire Line
 	4800 5250 4800 5100
 Wire Wire Line
-	5000 5100 5000 5250
-Wire Wire Line
 	5000 5250 4900 5250
 Connection ~ 4800 5250
-Wire Wire Line
-	4900 5100 4900 5250
 Connection ~ 4900 5250
 Wire Wire Line
 	4900 5250 4800 5250
@@ -174,26 +146,6 @@ Text GLabel 1350 4200 0    60   Output ~ 0
 GPS_TX
 Text GLabel 1350 4300 0    60   Input ~ 0
 GPS_RX
-Wire Wire Line
-	2000 2100 1500 2100
-Wire Wire Line
-	2000 4000 1350 4000
-Wire Wire Line
-	2000 4200 1350 4200
-Wire Wire Line
-	1350 4300 2000 4300
-Wire Wire Line
-	8450 4100 7800 4100
-Wire Wire Line
-	7800 4200 8450 4200
-Wire Wire Line
-	8450 4300 7800 4300
-Wire Wire Line
-	7800 4400 8450 4400
-Wire Wire Line
-	8450 3400 7800 3400
-Wire Wire Line
-	7800 3500 8450 3500
 Text GLabel 8450 4500 2    60   BiDi ~ 0
 SWDIO
 Text GLabel 8450 4600 2    60   BiDi ~ 0
@@ -202,16 +154,6 @@ Text GLabel 8550 3300 2    60   Input ~ 0
 VIN_MEAS
 Text GLabel 1500 2900 0    60   Input ~ 0
 OSC_IN
-Wire Wire Line
-	1350 3400 2000 3400
-Wire Wire Line
-	7800 4500 8450 4500
-Wire Wire Line
-	8450 4600 7800 4600
-Wire Wire Line
-	2000 2900 1500 2900
-Wire Wire Line
-	1500 3000 2000 3000
 $Sheet
 S 750  7050 1000 450 
 U 5E876221
@@ -450,35 +392,31 @@ F1 "connectors.sch" 50
 $EndSheet
 NoConn ~ 2000 2300
 $Sheet
-S 3050 7050 950  450 
+S 4100 7050 950  450 
 U 5E9A2887
 F0 "power" 50
 F1 "power.sch" 50
 $EndSheet
 $Sheet
-S 4150 7050 900  450 
+S 3050 7050 900  450 
 U 5E9DEA3D
 F0 "bno055" 50
 F1 "bno055.sch" 50
 $EndSheet
-NoConn ~ 7800 3200
 NoConn ~ 7800 4000
 NoConn ~ 7800 4700
 NoConn ~ 2000 2500
 NoConn ~ 2000 2600
-NoConn ~ 2000 3500
-NoConn ~ 2000 3600
-NoConn ~ 2000 3700
 NoConn ~ 2000 4100
 NoConn ~ 2000 4400
 NoConn ~ 2000 4500
 NoConn ~ 2000 4600
 NoConn ~ 2000 4700
 $Comp
-L power-supply:GND #PWR?
+L power-supply:GND #PWR0116
 U 1 1 5E887774
 P 10100 4850
-F 0 "#PWR?" H 10100 4600 50  0001 C CNN
+F 0 "#PWR0116" H 10100 4600 50  0001 C CNN
 F 1 "GND" H 10105 4677 50  0000 C CNN
 F 2 "" H 10100 4850 50  0000 C CNN
 F 3 "" H 10100 4850 50  0000 C CNN
@@ -490,4 +428,76 @@ Wire Wire Line
 Connection ~ 10100 4750
 Wire Wire Line
 	10100 4750 10400 4750
+Text GLabel 1350 3500 0    50   Output ~ 0
+SPI_SCK
+Wire Wire Line
+	7800 3600 8450 3600
+Wire Wire Line
+	7800 3700 8450 3700
+Wire Wire Line
+	7800 3900 8450 3900
+Wire Wire Line
+	7800 3800 8450 3800
+Wire Wire Line
+	7800 3300 8550 3300
+Wire Wire Line
+	7800 4100 8450 4100
+Wire Wire Line
+	7800 4200 8450 4200
+Wire Wire Line
+	7800 4300 8450 4300
+Wire Wire Line
+	7800 4400 8450 4400
+Wire Wire Line
+	7800 3400 8450 3400
+Wire Wire Line
+	7800 3500 8450 3500
+Wire Wire Line
+	7800 4500 8450 4500
+Wire Wire Line
+	7800 4600 8450 4600
+Wire Wire Line
+	5000 5100 5000 5250
+Wire Wire Line
+	4900 5100 4900 5250
+Text GLabel 1350 3600 0    50   Input ~ 0
+SPI_MISO
+Text GLabel 1350 3700 0    50   Output ~ 0
+SPI_MOSI
+Wire Wire Line
+	1350 3300 2000 3300
+Wire Wire Line
+	1350 3200 2000 3200
+Wire Wire Line
+	1350 3800 2000 3800
+Wire Wire Line
+	1350 3900 2000 3900
+Wire Wire Line
+	1250 2800 2000 2800
+Wire Wire Line
+	1500 1900 2000 1900
+Wire Wire Line
+	1500 2100 2000 2100
+Wire Wire Line
+	1350 4000 2000 4000
+Wire Wire Line
+	1350 4200 2000 4200
+Wire Wire Line
+	1350 4300 2000 4300
+Wire Wire Line
+	1350 3400 2000 3400
+Wire Wire Line
+	1500 2900 2000 2900
+Wire Wire Line
+	1500 3000 2000 3000
+Wire Wire Line
+	1350 3500 2000 3500
+Wire Wire Line
+	1350 3600 2000 3600
+Wire Wire Line
+	1350 3700 2000 3700
+Text GLabel 8450 3200 2    50   BiDi ~ 0
+GPIO
+Wire Wire Line
+	8450 3200 7800 3200
 $EndSCHEMATC
