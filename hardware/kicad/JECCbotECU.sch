@@ -150,7 +150,7 @@ Text GLabel 8450 4600 2    60   BiDi ~ 0
 SWCLK
 Text GLabel 8550 3300 2    60   Input ~ 0
 VIN_MEAS
-Text GLabel 1500 2900 0    60   Input ~ 0
+Text GLabel 1500 2500 0    60   Input ~ 0
 OSC_IN
 $Sheet
 S 750  7050 1000 450 
@@ -307,17 +307,6 @@ Wire Wire Line
 Wire Wire Line
 	10250 1100 10250 1000
 $Comp
-L devices:QUARTZCMS4 X1
-U 1 1 5E89B855
-P 10100 4000
-F 0 "X1" H 10100 4355 50  0000 C CNN
-F 1 "8MHz" H 10100 4264 50  0000 C CNN
-F 2 "crystals:Crystal_HC49-U_Vertical" H 10100 4173 50  0000 C CNN
-F 3 "" H 10100 4000 50  0000 C CNN
-	1    10100 4000
-	1    0    0    1   
-$EndComp
-$Comp
 L devices:R_0603 R1
 U 1 1 5E89DE18
 P 10100 3550
@@ -357,26 +346,16 @@ Wire Wire Line
 Wire Wire Line
 	10400 4750 10400 4650
 Wire Wire Line
-	10400 4450 10400 4000
-Wire Wire Line
-	9800 4000 9800 4450
-Wire Wire Line
-	9800 4000 9800 3550
-Wire Wire Line
 	9800 3550 10000 3550
-Connection ~ 9800 4000
 Wire Wire Line
 	10200 3550 10400 3550
-Wire Wire Line
-	10400 3550 10400 4000
-Connection ~ 10400 4000
 Wire Wire Line
 	10400 3350 10400 3550
 Connection ~ 10400 3550
 Wire Wire Line
 	9800 3350 9800 3550
 Connection ~ 9800 3550
-Text GLabel 1500 3000 0    60   Output ~ 0
+Text GLabel 1500 2600 0    60   Output ~ 0
 OSC_OUT
 Text GLabel 9800 3350 1    50   Output ~ 0
 OSC_IN
@@ -403,8 +382,8 @@ F1 "bno055.sch" 50
 $EndSheet
 NoConn ~ 7800 4000
 NoConn ~ 7800 4700
-NoConn ~ 2000 2500
-NoConn ~ 2000 2600
+NoConn ~ 2000 2900
+NoConn ~ 2000 3000
 NoConn ~ 2000 4100
 NoConn ~ 2000 4400
 NoConn ~ 2000 4500
@@ -428,32 +407,6 @@ Wire Wire Line
 	10100 4750 10400 4750
 Text GLabel 1350 3500 0    50   Output ~ 0
 SPI_SCK
-Wire Wire Line
-	7800 3600 8450 3600
-Wire Wire Line
-	7800 3700 8450 3700
-Wire Wire Line
-	7800 3900 8450 3900
-Wire Wire Line
-	7800 3800 8450 3800
-Wire Wire Line
-	7800 3300 8550 3300
-Wire Wire Line
-	7800 4100 8450 4100
-Wire Wire Line
-	7800 4200 8450 4200
-Wire Wire Line
-	7800 4300 8450 4300
-Wire Wire Line
-	7800 4400 8450 4400
-Wire Wire Line
-	7800 3400 8450 3400
-Wire Wire Line
-	7800 3500 8450 3500
-Wire Wire Line
-	7800 4500 8450 4500
-Wire Wire Line
-	7800 4600 8450 4600
 Wire Wire Line
 	5000 5100 5000 5250
 Wire Wire Line
@@ -485,9 +438,9 @@ Wire Wire Line
 Wire Wire Line
 	1350 3400 2000 3400
 Wire Wire Line
-	1500 2900 2000 2900
+	1500 2500 2000 2500
 Wire Wire Line
-	1500 3000 2000 3000
+	1500 2600 2000 2600
 Wire Wire Line
 	1350 3500 2000 3500
 Wire Wire Line
@@ -497,5 +450,56 @@ Wire Wire Line
 Text GLabel 8450 3200 2    50   BiDi ~ 0
 GPIO
 Wire Wire Line
-	8450 3200 7800 3200
+	7800 3600 8450 3600
+Wire Wire Line
+	7800 3700 8450 3700
+Wire Wire Line
+	7800 3900 8450 3900
+Wire Wire Line
+	7800 3800 8450 3800
+Wire Wire Line
+	7800 3300 8550 3300
+Wire Wire Line
+	7800 4100 8450 4100
+Wire Wire Line
+	7800 4200 8450 4200
+Wire Wire Line
+	7800 4300 8450 4300
+Wire Wire Line
+	7800 4400 8450 4400
+Wire Wire Line
+	7800 3400 8450 3400
+Wire Wire Line
+	7800 3500 8450 3500
+Wire Wire Line
+	7800 4500 8450 4500
+Wire Wire Line
+	7800 4600 8450 4600
+Wire Wire Line
+	7800 3200 8450 3200
+Wire Wire Line
+	9800 3550 9800 4100
+Wire Wire Line
+	10400 3550 10400 4100
+$Comp
+L devices:Crystal_Small Y1
+U 1 1 5E8F0531
+P 10100 4100
+F 0 "Y1" H 10100 4415 50  0000 C CNN
+F 1 "Crystal_Small" H 10100 4324 50  0000 C CNN
+F 2 "crystals:Crystal_HC49-U_Vertical" H 10100 4233 50  0000 C CNN
+F 3 "" H 10100 4100 50  0000 C CNN
+	1    10100 4100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10200 4100 10400 4100
+Connection ~ 10400 4100
+Wire Wire Line
+	10400 4100 10400 4450
+Wire Wire Line
+	10000 4100 9800 4100
+Connection ~ 9800 4100
+Wire Wire Line
+	9800 4100 9800 4450
 $EndSCHEMATC
