@@ -1,4 +1,4 @@
-update=Sun 05 Apr 2020 12:09:12 CEST
+update=Sun 05 Apr 2020 19:27:50 CEST
 version=1
 last_client=kicad
 [general]
