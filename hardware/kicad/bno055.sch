@@ -279,12 +279,64 @@ F 3 "" H 3050 4300 50  0000 C CNN
 $EndComp
 Wire Wire Line
 	3350 4300 3050 4300
-Text GLabel 5600 4100 2    50   BiDi ~ 0
+Text GLabel 6600 4100 2    50   BiDi ~ 0
 I2C_SDA
-Text GLabel 5600 4200 2    50   Input ~ 0
+Text GLabel 6600 4200 2    50   Input ~ 0
 I2C_SCL
 Wire Wire Line
-	5600 4100 5400 4100
+	5400 4100 5850 4100
 Wire Wire Line
-	5400 4200 5600 4200
+	5400 4200 6400 4200
+$Comp
+L devices:R_0603 R20
+U 1 1 5E97804D
+P 5850 3850
+F 0 "R20" H 5909 3896 50  0000 L CNN
+F 1 "10k" H 5909 3805 50  0000 L CNN
+F 2 "resistors:R_0603" H 5850 3700 50  0001 C CNN
+F 3 "" H 5850 3850 50  0000 C CNN
+	1    5850 3850
+	1    0    0    -1  
+$EndComp
+$Comp
+L devices:R_0603 R21
+U 1 1 5E9781BC
+P 6400 3850
+F 0 "R21" H 6459 3896 50  0000 L CNN
+F 1 "10k" H 6459 3805 50  0000 L CNN
+F 2 "resistors:R_0603" H 6400 3700 50  0001 C CNN
+F 3 "" H 6400 3850 50  0000 C CNN
+	1    6400 3850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5850 4100 5850 3950
+Connection ~ 5850 4100
+Wire Wire Line
+	5850 4100 6600 4100
+Wire Wire Line
+	6400 3950 6400 4200
+Connection ~ 6400 4200
+Wire Wire Line
+	6400 4200 6600 4200
+Wire Wire Line
+	5850 3750 5850 3650
+Wire Wire Line
+	5850 3650 6400 3650
+Wire Wire Line
+	6400 3650 6400 3750
+$Comp
+L power-supply:+3V3 #PWR?
+U 1 1 5E97B2A1
+P 6400 3500
+F 0 "#PWR?" H 6400 3350 50  0001 C CNN
+F 1 "+3V3" H 6415 3673 50  0000 C CNN
+F 2 "" H 6400 3500 50  0000 C CNN
+F 3 "" H 6400 3500 50  0000 C CNN
+	1    6400 3500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6400 3500 6400 3650
+Connection ~ 6400 3650
 $EndSCHEMATC

@@ -117,4 +117,16 @@ Wire Wire Line
 	4550 2950 4550 2850
 Wire Wire Line
 	4550 2950 5350 2950
+Text GLabel 5200 3950 0    50   Input ~ 0
+SPI_MOSI
+Text GLabel 5200 4050 0    50   Output ~ 0
+SPI_MISO
+Text GLabel 5200 3850 0    50   Input ~ 0
+SPI_SCK
+Wire Wire Line
+	5200 3850 5350 3850
+Wire Wire Line
+	5350 3950 5200 3950
+Wire Wire Line
+	5350 4050 5200 4050
 $EndSCHEMATC

@@ -103,7 +103,7 @@ F 3 "" V 3350 1200 50  0000 C CNN
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	2800 1200 3250 1200
+	2800 1200 2900 1200
 Wire Wire Line
 	6450 1150 6600 1150
 Wire Wire Line
@@ -226,17 +226,6 @@ Wire Wire Line
 	4100 3850 4000 3850
 Wire Wire Line
 	4000 2850 4000 2750
-$Comp
-L power-supply:+12V #PWR0134
-U 1 1 5E4230DE
-P 4000 2600
-F 0 "#PWR0134" H 4000 2450 50  0001 C CNN
-F 1 "+12V" H 4015 2773 50  0000 C CNN
-F 2 "" H 4000 2600 50  0000 C CNN
-F 3 "" H 4000 2600 50  0000 C CNN
-	1    4000 2600
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	4000 2850 4100 2850
 Wire Wire Line
@@ -542,8 +531,6 @@ Wire Wire Line
 	3400 2750 3550 2750
 Connection ~ 4000 2750
 Wire Wire Line
-	4000 2750 4000 2600
-Wire Wire Line
 	3550 2850 3550 2750
 Connection ~ 3550 2750
 Wire Wire Line
@@ -610,26 +597,137 @@ Text Label 2900 1200 0    50   ~ 0
 VIN_CON
 Text Label 3550 1200 0    50   ~ 0
 VIN_D
-$Comp
-L devices:C_1210 C18
-U 1 1 5E5A9138
-P 6050 1800
-F 0 "C18" V 5821 1800 50  0000 C CNN
-F 1 "DNI" V 5912 1800 50  0000 C CNN
-F 2 "capacitors:C_1210" H 6050 1650 50  0001 C CNN
-F 3 "" H 6050 1800 50  0000 C CNN
-	1    6050 1800
-	0    1    1    0   
-$EndComp
 Wire Wire Line
 	6600 1450 6600 1800
 Wire Wire Line
-	6600 1800 6150 1800
-Wire Wire Line
 	5550 1550 5550 1800
-Wire Wire Line
-	5550 1800 5950 1800
 Connection ~ 5550 1550
 Text GLabel 2800 1200 0    50   Input ~ 0
 VBAT
+Wire Wire Line
+	5550 1800 6600 1800
+Wire Wire Line
+	2900 1200 2900 2400
+Wire Wire Line
+	2900 2400 4000 2400
+Wire Wire Line
+	4000 2400 4000 2750
+Connection ~ 2900 1200
+Wire Wire Line
+	2900 1200 3250 1200
+$Comp
+L voltage-regulators:LT1117 U7
+U 1 1 5E949600
+P 3450 6050
+F 0 "U7" H 3450 6437 60  0000 C CNN
+F 1 "LT1117" H 3450 6331 60  0000 C CNN
+F 2 "SOT_TO:SOT-223" H 3400 5750 60  0001 C CNN
+F 3 "" H 3450 6050 60  0000 C CNN
+	1    3450 6050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power-supply:+5V #PWR?
+U 1 1 5E94D2D6
+P 2350 5750
+F 0 "#PWR?" H 2350 5600 50  0001 C CNN
+F 1 "+5V" H 2365 5923 50  0000 C CNN
+F 2 "" H 2350 5750 50  0000 C CNN
+F 3 "" H 2350 5750 50  0000 C CNN
+	1    2350 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L power-supply:+3V3 #PWR?
+U 1 1 5E94DBC1
+P 4550 5700
+F 0 "#PWR?" H 4550 5550 50  0001 C CNN
+F 1 "+3V3" H 4565 5873 50  0000 C CNN
+F 2 "" H 4550 5700 50  0000 C CNN
+F 3 "" H 4550 5700 50  0000 C CNN
+	1    4550 5700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4100 5950 4550 5950
+Wire Wire Line
+	4550 5950 4550 5700
+Wire Wire Line
+	4550 6100 4550 5950
+Connection ~ 4550 5950
+Wire Wire Line
+	4100 6100 4550 6100
+Wire Wire Line
+	2800 5950 2350 5950
+Wire Wire Line
+	2350 5950 2350 5750
+$Comp
+L power-supply:GND #PWR?
+U 1 1 5E95905D
+P 2700 6250
+F 0 "#PWR?" H 2700 6000 50  0001 C CNN
+F 1 "GND" H 2705 6077 50  0000 C CNN
+F 2 "" H 2700 6250 50  0000 C CNN
+F 3 "" H 2700 6250 50  0000 C CNN
+	1    2700 6250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2800 6100 2700 6100
+Wire Wire Line
+	2700 6100 2700 6250
+$Comp
+L devices:C_0603 C24
+U 1 1 5E961466
+P 2350 6150
+F 0 "C24" H 2442 6196 50  0000 L CNN
+F 1 "10uF" H 2442 6105 50  0000 L CNN
+F 2 "capacitors:C_0603" H 2350 6000 50  0001 C CNN
+F 3 "" H 2350 6150 50  0000 C CNN
+	1    2350 6150
+	1    0    0    -1  
+$EndComp
+$Comp
+L devices:C_0603 C25
+U 1 1 5E961D25
+P 4550 6350
+F 0 "C25" H 4642 6396 50  0000 L CNN
+F 1 "22uF" H 4642 6305 50  0000 L CNN
+F 2 "capacitors:C_0603" H 4550 6200 50  0001 C CNN
+F 3 "" H 4550 6350 50  0000 C CNN
+	1    4550 6350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2350 6050 2350 5950
+Connection ~ 2350 5950
+Wire Wire Line
+	4550 6250 4550 6100
+Connection ~ 4550 6100
+$Comp
+L power-supply:GND #PWR?
+U 1 1 5E968467
+P 2350 6400
+F 0 "#PWR?" H 2350 6150 50  0001 C CNN
+F 1 "GND" H 2355 6227 50  0000 C CNN
+F 2 "" H 2350 6400 50  0000 C CNN
+F 3 "" H 2350 6400 50  0000 C CNN
+	1    2350 6400
+	1    0    0    -1  
+$EndComp
+$Comp
+L power-supply:GND #PWR?
+U 1 1 5E9688BB
+P 4550 6600
+F 0 "#PWR?" H 4550 6350 50  0001 C CNN
+F 1 "GND" H 4555 6427 50  0000 C CNN
+F 2 "" H 4550 6600 50  0000 C CNN
+F 3 "" H 4550 6600 50  0000 C CNN
+	1    4550 6600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4550 6600 4550 6450
+Wire Wire Line
+	2350 6400 2350 6250
 $EndSCHEMATC

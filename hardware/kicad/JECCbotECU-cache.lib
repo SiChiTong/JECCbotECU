@@ -443,6 +443,28 @@ X shield 5 300 100 150 L 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
+# mechanical-connectors_WR-TBL_691313710002
+#
+DEF mechanical-connectors_WR-TBL_691313710002 P 0 40 Y N 1 F N
+F0 "P" 0 150 50 H V C CNN
+F1 "mechanical-connectors_WR-TBL_691313710002" 100 0 50 V V C CNN
+F2 "mechanical-connectors:WR-TBL_691313710002" -100 50 50 H I C CNN
+F3 "" 0 0 50 H V C CNN
+$FPLIST
+ Pin_Header_Straight_1X02
+ Pin_Header_Angled_1X02
+ Socket_Strip_Straight_1X02
+ Socket_Strip_Angled_1X02
+$ENDFPLIST
+DRAW
+S -50 -45 10 -55 0 1 0 N
+S -50 55 10 45 0 1 0 N
+S -50 100 50 -100 0 1 0 N
+X P1 1 -200 50 150 R 50 50 1 1 P
+X P2 2 -200 -50 150 R 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
 # power-supply_+12V
 #
 DEF power-supply_+12V #PWR 0 0 Y Y 1 F P
@@ -544,6 +566,22 @@ X NC 5 400 50 100 L 50 50 1 1 I
 X +Vo 6 400 150 100 L 50 50 1 1 I
 X 0V 7 400 -150 100 L 50 50 1 1 I
 X NC 8 400 -50 100 L 50 50 1 1 I
+ENDDRAW
+ENDDEF
+#
+# voltage-regulators_LT1117
+#
+DEF voltage-regulators_LT1117 U 0 40 Y Y 1 F N
+F0 "U" -400 250 60 H V C CNN
+F1 "voltage-regulators_LT1117" -300 -200 60 H V C CNN
+F2 "SOT_TO:SOT-223" -50 -300 60 H I C CNN
+F3 "" 0 0 60 H V C CNN
+DRAW
+S -450 200 450 -150 0 1 0 N
+X ADJ/GND 1 -650 -50 200 R 50 50 1 1 I
+X OUT 2 650 100 200 L 50 50 1 1 I
+X VIN 3 -650 100 200 R 50 50 1 1 I
+X OUT_PAD 4 650 -50 200 L 50 50 1 1 I
 ENDDRAW
 ENDDEF
 #
