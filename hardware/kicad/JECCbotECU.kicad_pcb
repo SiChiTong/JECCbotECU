@@ -11,8 +11,8 @@
 
   (page A4)
   (layers
-    (0 F.Cu signal hide)
-    (31 B.Cu signal hide)
+    (0 F.Cu signal)
+    (31 B.Cu signal)
     (32 B.Adhes user)
     (33 F.Adhes user)
     (34 B.Paste user)
@@ -3469,7 +3469,7 @@
     )
   )
 
-  (gr_text "GPIO Header: \n1: GND\n2: SCL\n3: 12V\n4: SDA\n5: 5V\n6: SCK\n7: 3V3\n8: MISO\n9: GPIO\n10: MOSI" (at 146.98472 69.27088) (layer B.SilkS)
+  (gr_text "GPIO Header: \n1: GND\n2: SCL\n3: 12V\n4: SDA\n5: 5V\n6: SCK\n7: 3V3\n8: MISO\n9: GPIO\n10: MOSI" (at 150.07844 65.69456 180) (layer B.SilkS)
     (effects (font (size 1.5 1.5) (thickness 0.3)) (justify mirror))
   )
   (gr_text "JECCbot ECU" (at 140.57376 69.04736) (layer F.SilkS)
@@ -4217,7 +4217,7 @@
   (segment (start 144.74444 73.3806) (end 144.74444 84.88172) (width 0.25) (layer F.Cu) (net 41))
   (segment (start 144.74444 84.88172) (end 143.54048 86.08568) (width 0.25) (layer F.Cu) (net 41))
   (segment (start 92.71 53.54) (end 92.71 51.38) (width 0.75) (layer F.Cu) (net 42))
-  (segment (start 92.71 54.245) (end 92.71 53.54) (width 0.25) (layer F.Cu) (net 42))
+  (segment (start 92.71 53.54) (end 92.71 54.245) (width 0.75) (layer F.Cu) (net 42))
   (segment (start 156.21 85.81898) (end 157.48 84.54898) (width 0.25) (layer F.Cu) (net 43))
   (segment (start 157.48 84.54898) (end 157.48 82.296) (width 0.25) (layer F.Cu) (net 43))
   (segment (start 156.21 81.026) (end 156.21 79.49) (width 0.25) (layer F.Cu) (net 43))
