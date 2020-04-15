@@ -4,17 +4,15 @@ EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 5
-Title "HighPowerMotorFeatherWing"
+Title "JECCbotECU"
 Date "2019-12-29"
 Rev "1.0"
-Comp "generationmake"
+Comp "JECC"
 Comment1 ""
 Comment2 ""
 Comment3 ""
-Comment4 "This documentation describes Open Hardware and is licensed under the CERN OHL v. 1.2."
+Comment4 ""
 $EndDescr
-Text Notes 500  650  0    47   ~ 0
-JECCbot ECU 
 Text Label 7900 3700 0    60   ~ 0
 INH12
 Text Label 7900 3800 0    60   ~ 0
