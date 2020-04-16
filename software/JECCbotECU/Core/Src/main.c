@@ -53,9 +53,14 @@ UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
-char lidarInitStr[2] = { 0xa5, 0x20 };
 char lidarReceiveBuffer[7];
-int lidarState = 0;
+
+char kvhReceiveChar;
+
+char gpsReceiveChar;
+
+char fields[13][15];
+char currentField[15];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -76,15 +81,30 @@ void powertrainSetSpeeds(int16_t left, int16_t right);
 
 void lidarInit();
 void lidarDecode();
+
+void kvhInit();
+void kvhDecode();
+
+void gpsInit();
+void gpsDecode();
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	if(huart->Instance == huart2.Instance)
+	if(huart->Instance == huart1.Instance)
+	{
+		kvhDecode();
+	}
+	else if(huart->Instance == huart2.Instance)
 	{
 		lidarDecode();
+	}
+	else if(huart->Instance == huart3.Instance)
+	{
+		gpsDecode();
 	}
 }
 /* USER CODE END 0 */
@@ -129,7 +149,12 @@ int main(void)
   apiInit();
 
   powertrainInit();
+
   lidarInit();
+
+  kvhInit();
+
+  gpsInit();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -520,14 +545,17 @@ void powertrainSetSpeeds(int16_t left, int16_t right)
 
 void lidarInit()
 {
+	char lidarInitStr[2] = { 0xa5, 0x20 };
+
 	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
-	lidarState = 0;
 	HAL_UART_Transmit(&huart2, lidarInitStr, 2, 1000);
 	HAL_UART_Receive_IT(&huart2, lidarReceiveBuffer, 7);
 }
 
 void lidarDecode()
 {
+	static int lidarState = LIDAR_STATE_INIT;
+
 	int quality, s, sinv, c, angle, distance;
 
 	if(lidarState == LIDAR_STATE_INIT)
@@ -540,8 +568,7 @@ void lidarDecode()
 		else
 		{
 			lidarState = LIDAR_STATE_INIT;
-			HAL_UART_Transmit_IT(&huart2, lidarInitStr, 2);
-			HAL_UART_Receive_IT(&huart2, lidarReceiveBuffer, 7);
+			lidarInit();
 		}
 	}
 	else if(lidarState == LIDAR_STATE_SCAN)
@@ -585,11 +612,162 @@ void lidarDecode()
 		else
 		{
 			lidarState = LIDAR_STATE_INIT;
-			HAL_UART_Transmit_IT(&huart2, lidarInitStr, 2);
-			HAL_UART_Receive_IT(&huart2, lidarReceiveBuffer, 7);
+			lidarInit();
 		}
 	}
 }
+
+void kvhInit()
+{
+	  char kvhInitStr[3] = { 's', '\r' };
+	  char kvhConfigNmeaStr[5] = { '=', 't' , ',', '0', '\r' };
+	  char kvhConfigSpeedStr[7] = { '=', 'r', ',' , '6', '0', '0', '\r' };
+	  char kvhConfigUnitStr[5] = { '=', 'i' , ',', 'd', '\r' };
+	  HAL_UART_Transmit(&huart1, kvhInitStr, 2, 1000);
+	  HAL_Delay(100);
+	  HAL_UART_Transmit(&huart1, kvhConfigNmeaStr, 5, 1000);
+	  HAL_Delay(100);
+	  HAL_UART_Transmit(&huart1, kvhConfigUnitStr, 5, 1000);
+	  HAL_Delay(100);
+	  HAL_UART_Transmit(&huart1, kvhConfigSpeedStr, 7, 1000);
+	  HAL_UART_Receive_IT(&huart1, &kvhReceiveChar, 1);
+}
+
+void kvhDecode()
+{
+	static int cursor = 0;
+	static char nmeaString[20];
+
+	if(kvhReceiveChar == '$')
+	{
+		cursor = 0;
+	}
+	else if(kvhReceiveChar == '\r')
+	{
+		nmeaString[cursor] = '\0';
+		if(strncmp("$HCHDT", nmeaString, 6) == 0)
+		{
+			char headingStr[4];
+			strncpy(headingStr, &nmeaString[7], 3);
+			headingStr[3] = '\0';
+			//CDC_Transmit_FS(headingStr, 3);
+			//CDC_Transmit_FS(nmeaString, ( cursor + 1 ));
+			int heading = strtol(headingStr, NULL, 10);
+			if(heading > 180)
+			{
+				heading -= 360;
+			}
+			while(apiLocked){}
+			apiMemory[API_REG_HEADING_KVH] = strtol(headingStr, NULL, 10);
+		}
+	}
+	else
+	{
+		cursor ++;
+	}
+
+	nmeaString[cursor] = kvhReceiveChar;
+	HAL_UART_Receive_IT(&huart1, &kvhReceiveChar, 1);
+}
+
+void gpsInit()
+{
+	HAL_UART_Receive_IT(&huart3, &gpsReceiveChar, 1);
+}
+
+void gpsDecode()
+{
+	static int cursor = 0;
+	static char nmeaString[20];
+
+	if(kvhReceiveChar == '$')
+	{
+		cursor = 0;
+	}
+	else if(kvhReceiveChar == '\n')
+	{
+		nmeaString[cursor] = '\0';
+		strcpy(nmeaString, "$GNRMC,174752.00,A,4900.06642,N,01249.68048,E,0.102,,110420,,,A*6E\n\0");
+		if(strncmp("$GPRMC", nmeaString, 6) == 0 || strncmp("$GnRMC", nmeaString, 6) == 0)
+		{
+			int fieldIndex=0;
+			int charIndex=0;
+//			char currentField[15];
+//			char fields[13][15];
+
+			for(int i=7; i<strlen(nmeaString); i++)
+			{
+			  char currentChar=nmeaString[i];
+			  if(currentChar!=',')
+			  {
+			    currentField[charIndex]=currentChar;
+			    charIndex++;
+			  }
+			  else
+			  {
+				currentField[charIndex] = '\0';
+			    strcpy(fields[fieldIndex], currentField);
+			    charIndex = 0;
+			    fieldIndex++;
+			  }
+			}
+//			//decode time -> fieldIndex 1
+//			String hh, mm, ss;
+//			hh=fields[1].charAt(0);
+//			hh+=fields[1].charAt(1);
+//			mm=fields[1].charAt(2);
+//			mm+=fields[1].charAt(3);
+//			ss=fields[1].charAt(4);
+//			ss+=fields[1].charAt(5);
+//			gpsData.hours=hh.toInt();
+//			gpsData.minutes=mm.toInt();
+//			gpsData.seconds==ss.toInt();
+//			//decode latitude -> fieldIndex 3/4
+//			String ddLat, mmLat;
+//			ddLat=fields[3].charAt(0);
+//			ddLat+=fields[3].charAt(1);
+//			mmLat=fields[3].charAt(2);
+//			mmLat+=fields[3].charAt(3);
+//			mmLat+=fields[3].charAt(4);
+//			mmLat+=fields[3].charAt(5);
+//			mmLat+=fields[3].charAt(6);
+//			mmLat+=fields[3].charAt(7);
+//			mmLat+=fields[3].charAt(8);
+//
+//			float lat=ddLat.toFloat()+mmLat.toFloat()/60;
+//			if(fields[4].charAt(0)=='S')
+//			  lat=-lat;
+//			gpsData.coordinate.latitude=lat;
+//
+//			//decode longitude -> fieldIndex 5/6
+//			String ddLon, mmLon;
+//			ddLon=fields[5].charAt(0);
+//			ddLon+=fields[5].charAt(1);
+//			ddLon+=fields[5].charAt(2);
+//			mmLon=fields[5].charAt(3);
+//			mmLon+=fields[5].charAt(4);
+//			mmLon+=fields[5].charAt(5);
+//			mmLon+=fields[5].charAt(6);
+//			mmLon+=fields[5].charAt(7);
+//			mmLon+=fields[5].charAt(8);
+//			mmLon+=fields[5].charAt(9);
+//
+//			float lon=ddLon.toFloat()+mmLon.toFloat()/60;
+//			if(fields[6]=='W')
+//			  lon=-lon;
+//
+//			gpsData.coordinate.longitude=lon;
+		}
+	}
+	else
+	{
+		cursor ++;
+	}
+
+	nmeaString[cursor] = gpsReceiveChar;
+	HAL_UART_Receive_IT(&huart3, &gpsReceiveChar, 1);
+}
+
 /* USER CODE END 4 */
 
 /**
