@@ -41,8 +41,8 @@ JECCbotECU.list \
 all: JECCbotECU.elf secondary-outputs
 
 # Tool invocations
-JECCbotECU.elf: $(OBJS) $(USER_OBJS) /home/jonas/STM32CubeIDE/workspace/JECCbotECU/STM32F103C8TX_FLASH.ld
-	arm-none-eabi-gcc -o "JECCbotECU.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"/home/jonas/STM32CubeIDE/workspace/JECCbotECU/STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="JECCbotECU.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+JECCbotECU.elf: $(OBJS) $(USER_OBJS) /home/jonas/code/cubeidews/JECCbotECU/STM32F103C8TX_FLASH.ld
+	arm-none-eabi-gcc -o "JECCbotECU.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"/home/jonas/code/cubeidews/JECCbotECU/STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="JECCbotECU.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

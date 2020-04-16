@@ -688,7 +688,7 @@ void gpsDecode()
 	{
 		nmeaString[cursor] = '\0';
 		strcpy(nmeaString, "$GNRMC,174752.00,A,4900.06642,N,01249.68048,E,0.102,,110420,,,A*6E\n\0");
-		if(strncmp("$GPRMC", nmeaString, 6) == 0 || strncmp("$GnRMC", nmeaString, 6) == 0)
+		if(strncmp("$GPRMC", nmeaString, 6) == 0 || strncmp("$GNRMC", nmeaString, 6) == 0)
 		{
 			int fieldIndex=0;
 			int charIndex=0;
