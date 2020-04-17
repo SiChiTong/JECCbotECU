@@ -94,3 +94,89 @@ void apiDoInstruction(char *instruction, char *responseMessage)
 	apiLocked = false;
 }
 
+bool isApiAddressValid(int address)
+{
+	if(address > 0 && address < API_MEMORY_SIZE)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool apiWrite16(int address, int16_t value)
+{
+	if(isApiAddressValid(address))
+	{
+		memcpy(&apiMemory[address], &value, 2);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+int16_t apiRead16(int address)
+{
+	int16_t val = -1;
+
+	if(isApiAddressValid(address))
+	{
+		memcpy(&val, &apiMemory[address], 4);
+	}
+
+	return val;
+}
+
+bool apiWrite32(int address, int32_t value)
+{
+	if(isApiAddressValid(address))
+	{
+		memcpy(&apiMemory[address], &value, 4);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+int32_t apiRead32(int address)
+{
+	int32_t val = -1;
+
+	if(isApiAddressValid(address))
+	{
+		memcpy(&val, &apiMemory[address], 4);
+	}
+
+	return val;
+}
+
+
+bool apiWriteFloat(int address, float value)
+{
+	if(isApiAddressValid(address))
+	{
+		memcpy(&apiMemory[address], &value, 4);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+float apiReadFloat(int address)
+{
+	float f =  -1.0;
+	if(isApiAddressValid(address))
+	{
+		memcpy(&f, &apiMemory[address], 4);
+	}
+
+	return f;
+}

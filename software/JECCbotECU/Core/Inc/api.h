@@ -24,4 +24,15 @@ void apiInit();
 
 void apiDoInstruction(char* instruction, char* responseMessage);
 
+bool isApiAddressValid(int address);
+
+bool apiWrite16(int address, int16_t value);
+int16_t apiRead16(int address);
+
+bool apiWrite32(int address, int32_t value);
+int32_t apiRead32(int address);
+
+bool apiWriteFloat(int address, float value);
+float apiReadFloat(int address);
+
 #endif /* INC_API_H_ */

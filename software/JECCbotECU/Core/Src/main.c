@@ -59,8 +59,14 @@ char kvhReceiveChar;
 
 char gpsReceiveChar;
 
+uint32_t dummy;
+
+float d1, d2;
+
+
 char fields[13][15];
-char currentField[15];
+
+float lat, lon;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -165,6 +171,15 @@ int main(void)
 	  {
 		  powertrainSetSpeeds(apiMemory[API_REG_PWMLEFT], apiMemory[API_REG_PWMRIGHT]);
 	  }
+
+	  dummy = apiRead32(API_BENCH_GPS_START);//(apiMemory[API_BENCH_GPS_START] << 16 ) | apiMemory[API_BENCH_GPS_START + 1];
+
+	  memcpy(&d1, &apiMemory[API_BENCH_GPS_START + 2], 4);
+	  memcpy(&d2, &apiMemory[API_BENCH_GPS_START + 4], 4);
+
+//	  d1 = (float)((apiMemory[API_BENCH_GPS_START + 2] << 16 ) | apiMemory[API_BENCH_GPS_START + 3]);
+//	  d2 = (float)((apiMemory[API_BENCH_GPS_START + 4] << 16 ) | apiMemory[API_BENCH_GPS_START + 5]);
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -678,7 +693,7 @@ void gpsInit()
 void gpsDecode()
 {
 	static int cursor = 0;
-	static char nmeaString[20];
+	static char nmeaString[100];
 
 	if(kvhReceiveChar == '$')
 	{
@@ -692,8 +707,9 @@ void gpsDecode()
 		{
 			int fieldIndex=0;
 			int charIndex=0;
-//			char currentField[15];
+
 //			char fields[13][15];
+			char currentField[15];
 
 			for(int i=7; i<strlen(nmeaString); i++)
 			{
@@ -711,52 +727,49 @@ void gpsDecode()
 			    fieldIndex++;
 			  }
 			}
-//			//decode time -> fieldIndex 1
-//			String hh, mm, ss;
-//			hh=fields[1].charAt(0);
-//			hh+=fields[1].charAt(1);
-//			mm=fields[1].charAt(2);
-//			mm+=fields[1].charAt(3);
-//			ss=fields[1].charAt(4);
-//			ss+=fields[1].charAt(5);
-//			gpsData.hours=hh.toInt();
-//			gpsData.minutes=mm.toInt();
-//			gpsData.seconds==ss.toInt();
-//			//decode latitude -> fieldIndex 3/4
-//			String ddLat, mmLat;
-//			ddLat=fields[3].charAt(0);
-//			ddLat+=fields[3].charAt(1);
-//			mmLat=fields[3].charAt(2);
-//			mmLat+=fields[3].charAt(3);
-//			mmLat+=fields[3].charAt(4);
-//			mmLat+=fields[3].charAt(5);
-//			mmLat+=fields[3].charAt(6);
-//			mmLat+=fields[3].charAt(7);
-//			mmLat+=fields[3].charAt(8);
-//
-//			float lat=ddLat.toFloat()+mmLat.toFloat()/60;
-//			if(fields[4].charAt(0)=='S')
-//			  lat=-lat;
-//			gpsData.coordinate.latitude=lat;
-//
-//			//decode longitude -> fieldIndex 5/6
-//			String ddLon, mmLon;
-//			ddLon=fields[5].charAt(0);
-//			ddLon+=fields[5].charAt(1);
-//			ddLon+=fields[5].charAt(2);
-//			mmLon=fields[5].charAt(3);
-//			mmLon+=fields[5].charAt(4);
-//			mmLon+=fields[5].charAt(5);
-//			mmLon+=fields[5].charAt(6);
-//			mmLon+=fields[5].charAt(7);
-//			mmLon+=fields[5].charAt(8);
-//			mmLon+=fields[5].charAt(9);
-//
-//			float lon=ddLon.toFloat()+mmLon.toFloat()/60;
-//			if(fields[6]=='W')
-//			  lon=-lon;
-//
-//			gpsData.coordinate.longitude=lon;
+
+			//decode time -> fieldIndex 0
+			char timeStr[7];
+			uint32_t time;
+			strncpy(timeStr, fields[0], 6);
+			timeStr[6] = '\0';
+			time = strtol(timeStr, NULL, 10);
+			while(apiLocked){}
+//			apiMemory[API_BENCH_GPS_START] = (time & 0xffff0000 ) >> 16;
+//			while(apiLocked){}
+//			apiMemory[API_BENCH_GPS_START + 1] = time & 0x00ffff;
+			apiWrite32(API_BENCH_GPS_START, time);
+
+			//decode latitude -> fieldIndex 2/3
+			char ddLat[3];
+			char mmLat[8];
+			strncpy(ddLat, fields[2], 2);
+			ddLat[2] = '\0';
+			strncpy(mmLat, &fields[2][2], 7);
+			mmLat[7] = '\0';
+
+			lat=atof(ddLat) + atof(mmLat)/60;
+			if(fields[3][0]=='S')
+			  lat=-lat;
+
+			while(apiLocked){}
+			memcpy(&apiMemory[API_BENCH_GPS_START + 2], &lat, 4);
+
+
+//			//decode longitude -> fieldIndex 4/5
+			char ddLon[4];
+			char mmLon[8];
+			strncpy(ddLon, fields[4], 3);
+			ddLon[3] = '\0';
+			strncpy(mmLon, &fields[4][3], 7);
+			mmLon[7] = '\0';
+
+			lon=atof(ddLon) + atof(mmLon)/60;
+			if(fields[6][0]=='W')
+			  lon=-lon;
+
+			while(apiLocked){}
+			memcpy(&apiMemory[API_BENCH_GPS_START + 4], &lon, 4);
 		}
 	}
 	else
