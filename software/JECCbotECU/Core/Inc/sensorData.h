@@ -8,7 +8,7 @@
 #ifndef INC_SENSORDATA_H_
 #define INC_SENSORDATA_H_
 
-#define LIDAR_BUFFERSIZE 20
+#define LIDAR_BUFFERSIZE 30
 
 typedef struct KvhData
 {
