@@ -263,9 +263,12 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
-	char response[20];
-	apiDoInstruction((char *)Buf, response);
-	CDC_Transmit_FS((uint8_t *)response, strlen(response));
+  apiSetInstruction((char *)Buf);
+  CDC_Transmit_FS(":", 1);
+
+//	char response[20];
+//	apiDoInstruction((char *)Buf, response);
+//	CDC_Transmit_FS((uint8_t *)response, strlen(response));
 
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);

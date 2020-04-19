@@ -30,7 +30,7 @@ Core/Src/stm32f1xx_hal_msp.o: ../Core/Src/stm32f1xx_hal_msp.c \
  ../USB_DEVICE/App/usb_device.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
  ../USB_DEVICE/Target/usbd_conf.h ../Core/Inc/api.h \
- ../Core/Inc/apiConfiguration.h
+ ../Core/Inc/apiConfiguration.h ../Core/Inc/sensorData.h
 
 ../Core/Inc/main.h:
 
@@ -99,3 +99,5 @@ Core/Src/stm32f1xx_hal_msp.o: ../Core/Src/stm32f1xx_hal_msp.c \
 ../Core/Inc/api.h:
 
 ../Core/Inc/apiConfiguration.h:
+
+../Core/Inc/sensorData.h:

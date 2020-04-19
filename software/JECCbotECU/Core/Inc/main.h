@@ -38,6 +38,7 @@ extern "C" {
 
 #include "api.h"
 #include "apiConfiguration.h"
+#include "sensorData.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

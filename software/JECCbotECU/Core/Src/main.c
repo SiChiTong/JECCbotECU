@@ -59,14 +59,7 @@ char kvhReceiveChar;
 
 char gpsReceiveChar;
 
-uint32_t dummy;
 
-float d1, d2;
-
-
-char fields[13][15];
-
-float lat, lon;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -94,6 +87,7 @@ void kvhDecode();
 void gpsInit();
 void gpsDecode();
 
+void insertSensordataToApi();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -167,19 +161,13 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if(API_STATE_JOYDRIVE == apiMemory[API_REG_STATE])
+	  insertSensordataToApi();
+
+	  ApiInstruction ins = apiUpdate();
+	  if(ins.responseLen > 0)
 	  {
-		  powertrainSetSpeeds(apiMemory[API_REG_PWMLEFT], apiMemory[API_REG_PWMRIGHT]);
+		  CDC_Transmit_FS(ins.response, ins.responseLen);
 	  }
-
-	  dummy = apiRead32(API_BENCH_GPS_START);//(apiMemory[API_BENCH_GPS_START] << 16 ) | apiMemory[API_BENCH_GPS_START + 1];
-
-	  memcpy(&d1, &apiMemory[API_BENCH_GPS_START + 2], 4);
-	  memcpy(&d2, &apiMemory[API_BENCH_GPS_START + 4], 4);
-
-//	  d1 = (float)((apiMemory[API_BENCH_GPS_START + 2] << 16 ) | apiMemory[API_BENCH_GPS_START + 3]);
-//	  d2 = (float)((apiMemory[API_BENCH_GPS_START + 4] << 16 ) | apiMemory[API_BENCH_GPS_START + 5]);
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -569,67 +557,107 @@ void lidarInit()
 
 void lidarDecode()
 {
-	static int lidarState = LIDAR_STATE_INIT;
+		static int lidarState = LIDAR_STATE_INIT;
 
-	int quality, s, sinv, c, angle, distance;
+		static int frameCounter = 0;
 
-	if(lidarState == LIDAR_STATE_INIT)
-	{
-		if(0xa5 == lidarReceiveBuffer[0] && 0x5a == lidarReceiveBuffer[1] && 0x05 == lidarReceiveBuffer[2] && 0x00 == lidarReceiveBuffer[3] && 0x00 == lidarReceiveBuffer[4] && 0x40 == lidarReceiveBuffer[5] && 0x81 == lidarReceiveBuffer[6])
+		int quality, s, sinv, c, angle, distance;
+
+		lidarData.available = false;
+
+		if(lidarState == LIDAR_STATE_INIT)
 		{
-			lidarState = LIDAR_STATE_SCAN;
-			HAL_UART_Receive_IT(&huart2, lidarReceiveBuffer, 5);
-		}
-		else
-		{
-			lidarState = LIDAR_STATE_INIT;
-			lidarInit();
-		}
-	}
-	else if(lidarState == LIDAR_STATE_SCAN)
-	{
-		s = lidarReceiveBuffer[0] & 0b00000001;
-		sinv = (lidarReceiveBuffer[0] & 0b00000010) >> 1;
-		quality = (lidarReceiveBuffer[0] & 0b11111100) >> 2;
-		c = lidarReceiveBuffer[1] & 0b00000001;
-		if(s == !sinv && c ==1)
-		{
-			if(s == 1)
+			if(0xa5 == lidarReceiveBuffer[0] && 0x5a == lidarReceiveBuffer[1] && 0x05 == lidarReceiveBuffer[2] && 0x00 == lidarReceiveBuffer[3] && 0x00 == lidarReceiveBuffer[4] && 0x40 == lidarReceiveBuffer[5] && 0x81 == lidarReceiveBuffer[6])
 			{
-				for(int i = 0; i < 360; i++)
-				{
-					while(apiLocked){}
-					apiMemory[API_BENCH_LIDAR_START + i]= 0;
-				}
+				lidarState = LIDAR_STATE_SCAN;
+				HAL_UART_Receive_IT(&huart2, lidarReceiveBuffer, 5);
 			}
-			if(quality > 0)
+			else
 			{
-				angle = lidarReceiveBuffer[2];
-				angle = angle << 8;
-				int tmp = lidarReceiveBuffer[1] & 0b11111110;
-				tmp = tmp >> 1;
-				angle += tmp;
-				angle = angle / 64;
-				while(angle > 360)
-				{
-					angle -= 360;
-				}
-				distance = lidarReceiveBuffer[4];
-				distance = distance << 8;
-				distance += lidarReceiveBuffer[3];
-				distance = distance / 4;
-				while(apiLocked){}
-				apiMemory[API_BENCH_LIDAR_START + angle] = distance;
+				lidarState = LIDAR_STATE_INIT;
+				lidarInit();
+			}
+		}
+		else if(lidarState == LIDAR_STATE_SCAN)
+		{
+			memcpy(lidarData.frameBuffer[frameCounter], lidarReceiveBuffer, 5);
+
+			frameCounter ++;
+			if(frameCounter >= LIDAR_BUFFERSIZE)
+			{
+				lidarData.available = true;
+				frameCounter = 0;
 			}
 
-			HAL_UART_Receive_IT(&huart2, lidarReceiveBuffer, 5);
+			if(!lidarData.available)
+			{
+				HAL_UART_Receive_IT(&huart2, lidarReceiveBuffer, 5);
+			}
 		}
-		else
-		{
-			lidarState = LIDAR_STATE_INIT;
-			lidarInit();
-		}
-	}
+//	static int lidarState = LIDAR_STATE_INIT;
+//
+//	int quality, s, sinv, c, angle, distance;
+//
+//	if(lidarState == LIDAR_STATE_INIT)
+//	{
+//		if(0xa5 == lidarReceiveBuffer[0] && 0x5a == lidarReceiveBuffer[1] && 0x05 == lidarReceiveBuffer[2] && 0x00 == lidarReceiveBuffer[3] && 0x00 == lidarReceiveBuffer[4] && 0x40 == lidarReceiveBuffer[5] && 0x81 == lidarReceiveBuffer[6])
+//		{
+//			lidarState = LIDAR_STATE_SCAN;
+//			HAL_UART_Receive_IT(&huart2, lidarReceiveBuffer, 5);
+//		}
+//		else
+//		{
+//			lidarState = LIDAR_STATE_INIT;
+//			lidarInit();
+//		}
+//	}
+//	else if(lidarState == LIDAR_STATE_SCAN)
+//	{
+//		s = lidarReceiveBuffer[0] & 0b00000001;
+//		sinv = (lidarReceiveBuffer[0] & 0b00000010) >> 1;
+//		quality = (lidarReceiveBuffer[0] & 0b11111100) >> 2;
+//		c = lidarReceiveBuffer[1] & 0b00000001;
+//		if(s == !sinv && c ==1)
+//		{
+////			if(s == 1)
+////			{
+////				data flush according to datasheet ignored
+////			}
+//			if(quality > 0)
+//			{
+//				angle = lidarReceiveBuffer[2];
+//				angle = angle << 8;
+//				int tmp = lidarReceiveBuffer[1] & 0b11111110;
+//				tmp = tmp >> 1;
+//				angle += tmp;
+//				angle = angle / 64;
+//				while(angle > 360)
+//				{
+//					angle -= 360;
+//				}
+//				distance = lidarReceiveBuffer[4];
+//				distance = distance << 8;
+//				distance += lidarReceiveBuffer[3];
+//				distance = distance / 4;
+//
+//				lidarData.available = false;
+//				lidarData.distance = distance;
+//				lidarData.angle = angle;
+//				if(angle == 1)
+//				{
+//					lidarData.distance = 0xffff;
+//				}
+//				lidarData.available = true;
+//			}
+//
+//			HAL_UART_Receive_IT(&huart2, lidarReceiveBuffer, 5);
+//		}
+//		else
+//		{
+//			lidarState = LIDAR_STATE_INIT;
+//			lidarInit();
+//		}
+//	}
 }
 
 void kvhInit()
@@ -653,6 +681,8 @@ void kvhDecode()
 	static int cursor = 0;
 	static char nmeaString[20];
 
+	kvhData.available = false;
+
 	if(kvhReceiveChar == '$')
 	{
 		cursor = 0;
@@ -665,15 +695,14 @@ void kvhDecode()
 			char headingStr[4];
 			strncpy(headingStr, &nmeaString[7], 3);
 			headingStr[3] = '\0';
-			//CDC_Transmit_FS(headingStr, 3);
-			//CDC_Transmit_FS(nmeaString, ( cursor + 1 ));
+
 			int heading = strtol(headingStr, NULL, 10);
 			if(heading > 180)
 			{
 				heading -= 360;
 			}
-			while(apiLocked){}
-			apiMemory[API_REG_HEADING_KVH] = strtol(headingStr, NULL, 10);
+			kvhData.heading = heading;
+			kvhData.available = true;
 		}
 	}
 	else
@@ -682,7 +711,10 @@ void kvhDecode()
 	}
 
 	nmeaString[cursor] = kvhReceiveChar;
-	HAL_UART_Receive_IT(&huart1, &kvhReceiveChar, 1);
+	if(!kvhData.available)
+	{
+		HAL_UART_Receive_IT(&huart1, &kvhReceiveChar, 1);
+	}
 }
 
 void gpsInit()
@@ -694,6 +726,8 @@ void gpsDecode()
 {
 	static int cursor = 0;
 	static char nmeaString[100];
+
+	gpsData.available = false;
 
 	if(kvhReceiveChar == '$')
 	{
@@ -708,8 +742,10 @@ void gpsDecode()
 			int fieldIndex=0;
 			int charIndex=0;
 
-//			char fields[13][15];
+			char fields[13][15];
 			char currentField[15];
+
+			float lat, lon;
 
 			for(int i=7; i<strlen(nmeaString); i++)
 			{
@@ -734,42 +770,36 @@ void gpsDecode()
 			strncpy(timeStr, fields[0], 6);
 			timeStr[6] = '\0';
 			time = strtol(timeStr, NULL, 10);
-			while(apiLocked){}
-//			apiMemory[API_BENCH_GPS_START] = (time & 0xffff0000 ) >> 16;
-//			while(apiLocked){}
-//			apiMemory[API_BENCH_GPS_START + 1] = time & 0x00ffff;
-			apiWrite32(API_BENCH_GPS_START, time);
 
-			//decode latitude -> fieldIndex 2/3
-			char ddLat[3];
-			char mmLat[8];
-			strncpy(ddLat, fields[2], 2);
-			ddLat[2] = '\0';
-			strncpy(mmLat, &fields[2][2], 7);
-			mmLat[7] = '\0';
+				//decode latitude -> fieldIndex 2/3
+				char ddLat[3];
+				char mmLat[8];
+				strncpy(ddLat, fields[2], 2);
+				ddLat[2] = '\0';
+				strncpy(mmLat, &fields[2][2], 7);
+				mmLat[7] = '\0';
 
-			lat=atof(ddLat) + atof(mmLat)/60;
-			if(fields[3][0]=='S')
-			  lat=-lat;
-
-			while(apiLocked){}
-			memcpy(&apiMemory[API_BENCH_GPS_START + 2], &lat, 4);
+				lat=atof(ddLat) + atof(mmLat)/60;
+				if(fields[3][0]=='S')
+				  lat=-lat;
 
 
-//			//decode longitude -> fieldIndex 4/5
-			char ddLon[4];
-			char mmLon[8];
-			strncpy(ddLon, fields[4], 3);
-			ddLon[3] = '\0';
-			strncpy(mmLon, &fields[4][3], 7);
-			mmLon[7] = '\0';
+	//			//decode longitude -> fieldIndex 4/5
+				char ddLon[4];
+				char mmLon[8];
+				strncpy(ddLon, fields[4], 3);
+				ddLon[3] = '\0';
+				strncpy(mmLon, &fields[4][3], 7);
+				mmLon[7] = '\0';
 
-			lon=atof(ddLon) + atof(mmLon)/60;
-			if(fields[6][0]=='W')
-			  lon=-lon;
+				lon=atof(ddLon) + atof(mmLon)/60;
+				if(fields[6][0]=='W')
+				  lon=-lon;
 
-			while(apiLocked){}
-			memcpy(&apiMemory[API_BENCH_GPS_START + 4], &lon, 4);
+			gpsData.time = time;
+			gpsData.lat = lat;
+			gpsData.lon = lon;
+			gpsData.available = true;
 		}
 	}
 	else
@@ -778,7 +808,64 @@ void gpsDecode()
 	}
 
 	nmeaString[cursor] = gpsReceiveChar;
-	HAL_UART_Receive_IT(&huart3, &gpsReceiveChar, 1);
+	if(!gpsData.available)
+	{
+		HAL_UART_Receive_IT(&huart3, &gpsReceiveChar, 1);
+	}
+}
+
+void insertSensordataToApi()
+{
+	if(kvhData.available)
+	{
+		apiWrite16(API_REG_HEADING_KVH, kvhData.heading);
+		HAL_UART_Receive_IT(&huart1, &kvhReceiveChar, 1);
+	}
+
+	if(gpsData.available)
+	{
+		apiWrite32(API_BENCH_GPS_START, gpsData.time);
+		apiWriteFloat(API_BENCH_GPS_START + 2, gpsData.lat);
+		apiWriteFloat(API_BENCH_GPS_START + 4, gpsData.lon);
+	}
+
+	if(lidarData.available)
+	{
+		for(int i = 0; i < LIDAR_BUFFERSIZE; i++)
+		{
+			int s = lidarData.frameBuffer[i][0] & 0b00000001;
+			int sinv = (lidarData.frameBuffer[i][0] & 0b00000010) >> 1;
+			int quality = (lidarData.frameBuffer[i][0] & 0b11111100) >> 2;
+			int c = lidarData.frameBuffer[i][1] & 0b00000001;
+			if(s == !sinv && c ==1)
+			{
+	//			if(s == 1)
+	//			{
+	//				data flush according to datasheet ignored
+	//			}
+				if(quality > 0)
+				{
+					uint16_t angle = lidarData.frameBuffer[i][2];
+					angle = angle << 8;
+					int tmp = lidarData.frameBuffer[i][1] & 0b11111110;
+					tmp = tmp >> 1;
+					angle += tmp;
+					angle = angle / 64;
+					while(angle > 360)
+					{
+						angle -= 360;
+					}
+					uint16_t distance = lidarData.frameBuffer[i][4];
+					distance = distance << 8;
+					distance += lidarData.frameBuffer[i][3];
+					distance = distance / 4;
+
+					apiWrite16(API_BENCH_LIDAR_START + angle, distance);
+				}
+			}
+		}
+		HAL_UART_Receive_IT(&huart2, lidarReceiveBuffer, 5);
+	}
 }
 
 /* USER CODE END 4 */
