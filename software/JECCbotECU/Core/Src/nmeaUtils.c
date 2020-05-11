@@ -25,6 +25,9 @@ void hchdtToApi(NmeaString *nmeaString)
 	headingStr[3] = '\0';
 
 	int heading = strtol(headingStr, NULL, 10);
+
+	heading += NMEA_HEADING_OFFSET;
+
 	if(heading > 180)
 	{
 		heading -= 360;

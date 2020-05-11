@@ -22,6 +22,8 @@
 
 #define NMEA_TIME_OFFSET 2
 
+#define NMEA_HEADING_OFFSET 180
+
 typedef struct NmeaString
 {
 	char nmeaStr[80];

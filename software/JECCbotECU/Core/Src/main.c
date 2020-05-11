@@ -84,6 +84,7 @@ void gpsDecode();
 
 float latitude, longitude;
 uint32_t time;
+int heading;
 
 void insertSensordataToApi();
 /* USER CODE END PFP */
@@ -171,6 +172,11 @@ int main(void)
 	  {
 		  powertrainSetSpeeds(apiMemory[API_REG_PWMLEFT], apiMemory[API_REG_PWMRIGHT]);
 	  }
+
+	  heading = apiMemory[API_REG_HEADING_KVH];
+	  time = apiRead32(API_BENCH_GPS_START);
+	  latitude = apiReadFloat(API_BENCH_GPS_START+2);
+	  longitude = apiReadFloat(API_BENCH_GPS_START +4);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
