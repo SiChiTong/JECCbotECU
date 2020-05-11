@@ -1,0 +1,3 @@
+nmeaUtils.c:9:6:nmeaDecodeToApi	16	static
+nmeaUtils.c:21:6:hchdtToApi	24	static
+nmeaUtils.c:36:6:rmcToApi	296	static

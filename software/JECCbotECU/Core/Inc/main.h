@@ -38,7 +38,8 @@ extern "C" {
 
 #include "api.h"
 #include "apiConfiguration.h"
-#include "sensorData.h"
+
+#include "nmeaUtils.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -66,8 +67,6 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define LED_ONBOARD_Pin GPIO_PIN_13
-#define LED_ONBOARD_GPIO_Port GPIOC
 #define LIDAR_TX_Pin GPIO_PIN_2
 #define LIDAR_TX_GPIO_Port GPIOA
 #define LIDAR_RX_Pin GPIO_PIN_3

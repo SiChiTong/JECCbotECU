@@ -53,12 +53,8 @@ UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
-char lidarReceiveBuffer[7];
-
-char kvhReceiveChar;
-
-char gpsReceiveChar;
-
+NmeaString kvhString;
+NmeaString gpsString;
 
 /* USER CODE END PV */
 
@@ -78,17 +74,16 @@ void powertrainEnableMotors(int enableState);
 
 void powertrainSetSpeeds(int16_t left, int16_t right);
 
-void lidarInit();
-void lidarStart();
-void lidarDecode();
-
 void kvhInit();
-void kvhStart();
+void kvhFetch();
 void kvhDecode();
 
 void gpsInit();
-void gpsStart();
+void gpsFetch();
 void gpsDecode();
+
+float latitude, longitude;
+uint32_t time;
 
 void insertSensordataToApi();
 /* USER CODE END PFP */
@@ -99,15 +94,15 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if(huart->Instance == huart1.Instance)
 	{
-		kvhDecode();
+		kvhFetch();
 	}
 	else if(huart->Instance == huart2.Instance)
 	{
-		lidarDecode();
+		//lidarDecode();
 	}
 	else if(huart->Instance == huart3.Instance)
 	{
-		gpsDecode();
+		gpsFetch();
 	}
 }
 /* USER CODE END 0 */
@@ -121,7 +116,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
-  
+
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -138,7 +133,6 @@ int main(void)
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
-
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USB_DEVICE_Init();
@@ -152,8 +146,6 @@ int main(void)
   apiInit();
 
   powertrainInit();
-
-  lidarInit();
 
   kvhInit();
 
@@ -174,6 +166,11 @@ int main(void)
 	  {
 		  CDC_Transmit_FS(ins.response, ins.responseLen);
 	  }
+
+	  if(API_STATE_JOYDRIVE == apiMemory[API_REG_STATE])
+	  {
+		  powertrainSetSpeeds(apiMemory[API_REG_PWMLEFT], apiMemory[API_REG_PWMRIGHT]);
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -191,7 +188,7 @@ void SystemClock_Config(void)
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
-  /** Initializes the CPU, AHB and APB busses clocks 
+  /** Initializes the CPU, AHB and APB busses clocks
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
@@ -204,7 +201,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  /** Initializes the CPU, AHB and APB busses clocks 
+  /** Initializes the CPU, AHB and APB busses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
@@ -451,7 +448,7 @@ static void MX_USART3_UART_Init(void)
 
   /* USER CODE END USART3_Init 1 */
   huart3.Instance = USART3;
-  huart3.Init.BaudRate = 9600;
+  huart3.Init.BaudRate = 38400;
   huart3.Init.WordLength = UART_WORDLENGTH_8B;
   huart3.Init.StopBits = UART_STOPBITS_1;
   huart3.Init.Parity = UART_PARITY_NONE;
@@ -478,23 +475,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LED_ONBOARD_GPIO_Port, LED_ONBOARD_Pin, GPIO_PIN_SET);
-
-  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, INH34_Pin|INH12_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin : LED_ONBOARD_Pin */
-  GPIO_InitStruct.Pin = LED_ONBOARD_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LED_ONBOARD_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : INH34_Pin INH12_Pin */
   GPIO_InitStruct.Pin = INH34_Pin|INH12_Pin;
@@ -552,63 +538,6 @@ void powertrainSetSpeeds(int16_t left, int16_t right)
 	}
 }
 
-void lidarInit()
-{
-	char lidarInitStr[2] = { 0xa5, 0x20 };
-
-	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
-	HAL_UART_Transmit(&huart2, lidarInitStr, 2, 1000);
-	HAL_UART_Receive_IT(&huart2, lidarReceiveBuffer, 7);
-
-	lidarStart();
-}
-
-void lidarStart()
-{
-	lidarData.available = false;
-
-	HAL_UART_Receive_IT(&huart2, lidarReceiveBuffer, 5);
-}
-
-void lidarDecode()
-{
-		static int lidarState = LIDAR_STATE_INIT;
-
-		static int frameCounter = 0;
-
-		int quality, s, sinv, c, angle, distance;
-
-		if(lidarState == LIDAR_STATE_INIT)
-		{
-			if(0xa5 == lidarReceiveBuffer[0] && 0x5a == lidarReceiveBuffer[1] && 0x05 == lidarReceiveBuffer[2] && 0x00 == lidarReceiveBuffer[3] && 0x00 == lidarReceiveBuffer[4] && 0x40 == lidarReceiveBuffer[5] && 0x81 == lidarReceiveBuffer[6])
-			{
-				lidarState = LIDAR_STATE_SCAN;
-//				HAL_UART_Receive_IT(&huart2, lidarReceiveBuffer, 5);
-			}
-			else
-			{
-				lidarState = LIDAR_STATE_INIT;
-				lidarInit();
-			}
-		}
-		else if(lidarState == LIDAR_STATE_SCAN)
-		{
-			memcpy(lidarData.frameBuffer[frameCounter], lidarReceiveBuffer, 5);
-
-			frameCounter ++;
-			if(frameCounter >= LIDAR_BUFFERSIZE)
-			{
-				lidarData.available = true;
-				frameCounter = 0;
-			}
-
-			if(!lidarData.available)
-			{
-				HAL_UART_Receive_IT(&huart2, lidarReceiveBuffer, 5);
-			}
-		}
-}
-
 void kvhInit()
 {
 	  char kvhInitStr[3] = { 's', '\r' };
@@ -623,218 +552,91 @@ void kvhInit()
 	  HAL_Delay(100);
 	  HAL_UART_Transmit(&huart1, kvhConfigSpeedStr, 7, 1000);
 
-	  kvhStart();
+	  kvhString.available = false;
+
+	  HAL_UART_Receive_IT(&huart1, kvhString.nmeaStr, 1);
 }
 
-void kvhStart()
+void kvhFetch()
 {
-	kvhData.available = false;
+	static bool startFound = false;
 
-	HAL_UART_Receive_IT(&huart1, &kvhReceiveChar, 1);
-}
-
-void kvhDecode()
-{
-	static int cursor = 0;
-	static char nmeaString[20];
-
-	if(kvhReceiveChar == '$')
+	if('$' == kvhString.nmeaStr[0])
 	{
-		cursor = 0;
-	}
-	else if(kvhReceiveChar == '\r')
-	{
-		nmeaString[cursor] = '\0';
-		if(strncmp("$HCHDT", nmeaString, 6) == 0)
+		if(startFound)
 		{
-			char headingStr[4];
-			strncpy(headingStr, &nmeaString[7], 3);
-			headingStr[3] = '\0';
-
-			int heading = strtol(headingStr, NULL, 10);
-			if(heading > 180)
-			{
-				heading -= 360;
-			}
-			kvhData.heading = heading;
-			kvhData.available = true;
+			startFound = false;
+			kvhString.available = true;
+		}
+		else
+		{
+			startFound = true;
+			HAL_UART_Receive_IT(&huart1, &kvhString.nmeaStr[1], NMEA_HCHDT_LEN - 1);
 		}
 	}
 	else
 	{
-		cursor ++;
+		startFound = false;
+		HAL_UART_Receive_IT(&huart1, kvhString.nmeaStr, 1);
 	}
+}
 
-	nmeaString[cursor] = kvhReceiveChar;
-	if(!kvhData.available)
+void kvhDecode()
+{
+	if(kvhString.available)
 	{
-		HAL_UART_Receive_IT(&huart1, &kvhReceiveChar, 1);
+		kvhString.available = false;
+		kvhString.nmeaStr[NMEA_HCHDT_LEN] = '\0';
+		nmeaDecodeToApi(&kvhString);
+		HAL_UART_Receive_IT(&huart1, kvhString.nmeaStr, 1);
 	}
 }
 
 void gpsInit()
 {
-	gpsStart();
+		gpsString.available = false;
+		HAL_UART_Receive_IT(&huart3, gpsString.nmeaStr, 1);
 }
 
-void gpsStart()
+void gpsFetch()
 {
-	gpsData.available = false;
+	static bool startFound = false;
 
-	HAL_UART_Receive_IT(&huart3, &gpsReceiveChar, 1);
-}
-
-void gpsDecode()
-{
-	static int cursor = 0;
-	static char nmeaString[100];
-
-	if(kvhReceiveChar == '$')
+	if('$' == gpsString.nmeaStr[0])
 	{
-		cursor = 0;
-	}
-	else if(kvhReceiveChar == '\n')
-	{
-		nmeaString[cursor] = '\0';
-		strcpy(nmeaString, "$GNRMC,174752.00,A,4900.06642,N,01249.68048,E,0.102,,110420,,,A*6E\n\0");
-		if(strncmp("$GPRMC", nmeaString, 6) == 0 || strncmp("$GNRMC", nmeaString, 6) == 0)
+		if(startFound)
 		{
-			int fieldIndex=0;
-			int charIndex=0;
-
-			char fields[13][15];
-			char currentField[15];
-
-			float lat, lon;
-
-			for(int i=7; i<strlen(nmeaString); i++)
-			{
-			  char currentChar=nmeaString[i];
-			  if(currentChar!=',')
-			  {
-			    currentField[charIndex]=currentChar;
-			    charIndex++;
-			  }
-			  else
-			  {
-				currentField[charIndex] = '\0';
-			    strcpy(fields[fieldIndex], currentField);
-			    charIndex = 0;
-			    fieldIndex++;
-			    if(fieldIndex > 5)
-			    {
-			    	break;
-			    }
-			  }
-			}
-
-			//decode time -> fieldIndex 0
-			char timeStr[7];
-			uint32_t time;
-			strncpy(timeStr, fields[0], 6);
-			timeStr[6] = '\0';
-			time = strtol(timeStr, NULL, 10);
-
-				//decode latitude -> fieldIndex 2/3
-				char ddLat[3];
-				char mmLat[8];
-				strncpy(ddLat, fields[2], 2);
-				ddLat[2] = '\0';
-				strncpy(mmLat, &fields[2][2], 7);
-				mmLat[7] = '\0';
-
-				lat=atof(ddLat) + atof(mmLat)/60;
-				if(fields[3][0]=='S')
-				  lat=-lat;
-
-
-	//			//decode longitude -> fieldIndex 4/5
-				char ddLon[4];
-				char mmLon[8];
-				strncpy(ddLon, fields[4], 3);
-				ddLon[3] = '\0';
-				strncpy(mmLon, &fields[4][3], 7);
-				mmLon[7] = '\0';
-
-				lon=atof(ddLon) + atof(mmLon)/60;
-				if(fields[6][0]=='W')
-				  lon=-lon;
-
-			gpsData.time = time;
-			gpsData.lat = lat;
-			gpsData.lon = lon;
-			gpsData.available = true;
+			startFound = false;
+			gpsString.available = true;
+		}
+		else
+		{
+			startFound = true;
+			HAL_UART_Receive_IT(&huart3, &gpsString.nmeaStr[1], NMEA_GPRMC_LEN - 1);
 		}
 	}
 	else
 	{
-		cursor ++;
+		startFound = false;
+		HAL_UART_Receive_IT(&huart3, gpsString.nmeaStr, 1);
 	}
+}
 
-	nmeaString[cursor] = gpsReceiveChar;
-	if(!gpsData.available)
+void gpsDecode()
+{
+	if(gpsString.available)
 	{
-		HAL_UART_Receive_IT(&huart3, &gpsReceiveChar, 1);
+		gpsString.available = false;
+		gpsString.nmeaStr[NMEA_GPRMC_LEN] = '\0';
+		nmeaDecodeToApi(&gpsString);
+		HAL_UART_Receive_IT(&huart3, gpsString.nmeaStr, 1);
 	}
 }
 
 void insertSensordataToApi()
 {
-	if(kvhData.available)
-	{
-		apiWrite16(API_REG_HEADING_KVH, kvhData.heading);
-		kvhStart();
-	}
-
-	if(gpsData.available)
-	{
-		apiWrite32(API_BENCH_GPS_START, gpsData.time);
-		apiWriteFloat(API_BENCH_GPS_START + 2, gpsData.lat);
-		apiWriteFloat(API_BENCH_GPS_START + 4, gpsData.lon);
-		gpsStart();
-	}
-
-	if(lidarData.available)
-	{
-		for(int i = 0; i < LIDAR_BUFFERSIZE; i++)
-		{
-			int s = lidarData.frameBuffer[i][0] & 0b00000001;
-			int sinv = (lidarData.frameBuffer[i][0] & 0b00000010) >> 1;
-			int quality = (lidarData.frameBuffer[i][0] & 0b11111100) >> 2;
-			int c = lidarData.frameBuffer[i][1] & 0b00000001;
-			if(s == !sinv && c ==1)
-			{
-	//			if(s == 1)
-	//			{
-	//				data flush according to datasheet ignored
-	//			}
-				if(quality > 0)
-				{
-					uint16_t angle = lidarData.frameBuffer[i][2];
-					angle = angle << 8;
-					int tmp = lidarData.frameBuffer[i][1] & 0b11111110;
-					tmp = tmp >> 1;
-					angle += tmp;
-					angle = angle / 64;
-					while(angle > 360)
-					{
-						angle -= 360;
-					}
-					uint16_t distance = lidarData.frameBuffer[i][4];
-					distance = distance << 8;
-					distance += lidarData.frameBuffer[i][3];
-					distance = distance / 4;
-
-					apiWrite16(API_BENCH_LIDAR_START + angle, distance);
-				}
-			}
-			else
-			{
-				lidarInit();
-			}
-		}
-		lidarStart();
-	}
+	kvhDecode();
+	gpsDecode();
 }
 
 /* USER CODE END 4 */
@@ -860,7 +662,7 @@ void Error_Handler(void)
   * @retval None
   */
 void assert_failed(uint8_t *file, uint32_t line)
-{ 
+{
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
      tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
