@@ -577,7 +577,7 @@ void kvhFetch()
 		else
 		{
 			startFound = true;
-			HAL_UART_Receive_IT(&huart1, &kvhString.nmeaStr[1], NMEA_HCHDT_LEN - 1);
+			HAL_UART_Receive_IT(&huart1, &kvhString.nmeaStr[1], NMEA_STR_LEN - 1);
 		}
 	}
 	else
@@ -618,7 +618,7 @@ void gpsFetch()
 		else
 		{
 			startFound = true;
-			HAL_UART_Receive_IT(&huart3, &gpsString.nmeaStr[1], NMEA_GPRMC_LEN - 1);
+			HAL_UART_Receive_IT(&huart3, &gpsString.nmeaStr[1], NMEA_STR_LEN - 1);
 		}
 	}
 	else

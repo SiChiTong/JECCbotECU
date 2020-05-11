@@ -6,22 +6,29 @@
  */
 #include "nmeaUtils.h"
 
+
 void nmeaDecodeToApi(NmeaString *nmeaString)
 {
-	if(strncmp("$HCHDT", nmeaString->nmeaStr, 6) == 0)
+	for(int i = 0; i < NMEA_STR_LEN; i++)
 	{
-		hchdtToApi(nmeaString);
-	}
-	else if(strncmp("$GNRMC", nmeaString->nmeaStr, 6) == 0 || strncmp("$GPRMC", nmeaString->nmeaStr, 6) == 0)
-	{
-		rmcToApi(nmeaString);
+		if(nmeaString->nmeaStr[i] ==  '$')
+		{
+			if(strncmp("$HCHDT", &nmeaString->nmeaStr[i], 6) == 0 && NMEA_STR_LEN - i > NMEA_HCHDT_LEN)
+			{
+				hchdtToApi(nmeaString, i);
+			}
+			else if((strncmp("$GNRMC", &nmeaString->nmeaStr[i], 6) == 0 || strncmp("$GPRMC", &nmeaString->nmeaStr[i], 6) == 0) && NMEA_STR_LEN - i > NMEA_GPRMC_LEN)
+			{
+				gprmcToApi(nmeaString, i);
+			}
+		}
 	}
 }
 
-void hchdtToApi(NmeaString *nmeaString)
+void hchdtToApi(NmeaString *nmeaString, int start)
 {
 	char headingStr[4];
-	strncpy(headingStr, &nmeaString->nmeaStr[7], 3);
+	strncpy(headingStr, &nmeaString->nmeaStr[start + 7], 3);
 	headingStr[3] = '\0';
 
 	int heading = strtol(headingStr, NULL, 10);
@@ -36,7 +43,7 @@ void hchdtToApi(NmeaString *nmeaString)
 	apiWrite16(API_REG_HEADING_KVH, heading);
 }
 
-void rmcToApi(NmeaString *nmeaString)
+void gprmcToApi(NmeaString *nmeaString, int start)
 {
 	int fieldIndex=0;
 	int charIndex=0;
@@ -48,7 +55,7 @@ void rmcToApi(NmeaString *nmeaString)
 
 	for(int i=7; i<strlen(nmeaString->nmeaStr); i++)
 	{
-	  char currentChar=nmeaString->nmeaStr[i];
+	  char currentChar=nmeaString->nmeaStr[start + i];
 	  if(currentChar!=',')
 	  {
 	    currentField[charIndex]=currentChar;
