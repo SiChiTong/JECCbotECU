@@ -40,6 +40,7 @@ extern "C" {
 #include "apiConfiguration.h"
 
 #include "nmeaUtils.h"
+#include "moveUtils.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

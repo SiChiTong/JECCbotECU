@@ -172,6 +172,11 @@ int main(void)
 	  {
 		  powertrainSetSpeeds(apiMemory[API_REG_PWMLEFT], apiMemory[API_REG_PWMRIGHT]);
 	  }
+	  else if(API_STATE_MOVEHEADING == apiMemory[API_REG_STATE])
+	  {
+		  moveHeading();
+		  powertrainSetSpeeds(apiMemory[API_REG_PWMLEFT], apiMemory[API_REG_PWMRIGHT]);
+	  }
 
 	  heading = apiMemory[API_REG_HEADING_KVH];
 	  time = apiRead32(API_BENCH_GPS_START);

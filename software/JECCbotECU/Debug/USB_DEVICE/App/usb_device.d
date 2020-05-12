@@ -32,6 +32,7 @@ USB_DEVICE/App/usb_device.o: ../USB_DEVICE/App/usb_device.c \
  ../USB_DEVICE/Target/usbd_conf.h ../Core/Inc/main.h \
  ../USB_DEVICE/App/usb_device.h ../Core/Inc/api.h \
  ../Core/Inc/apiConfiguration.h ../Core/Inc/nmeaUtils.h \
+ ../Core/Inc/moveUtils.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
@@ -113,6 +114,8 @@ USB_DEVICE/App/usb_device.o: ../USB_DEVICE/App/usb_device.c \
 ../Core/Inc/apiConfiguration.h:
 
 ../Core/Inc/nmeaUtils.h:
+
+../Core/Inc/moveUtils.h:
 
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h:
 

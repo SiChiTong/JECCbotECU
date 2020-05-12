@@ -31,7 +31,7 @@ Core/Src/stm32f1xx_it.o: ../Core/Src/stm32f1xx_it.c ../Core/Inc/main.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
  ../USB_DEVICE/Target/usbd_conf.h ../Core/Inc/api.h \
  ../Core/Inc/apiConfiguration.h ../Core/Inc/nmeaUtils.h \
- ../Core/Inc/stm32f1xx_it.h
+ ../Core/Inc/moveUtils.h ../Core/Inc/stm32f1xx_it.h
 
 ../Core/Inc/main.h:
 
@@ -102,5 +102,7 @@ Core/Src/stm32f1xx_it.o: ../Core/Src/stm32f1xx_it.c ../Core/Inc/main.h \
 ../Core/Inc/apiConfiguration.h:
 
 ../Core/Inc/nmeaUtils.h:
+
+../Core/Inc/moveUtils.h:
 
 ../Core/Inc/stm32f1xx_it.h:
