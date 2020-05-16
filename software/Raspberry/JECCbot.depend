@@ -1,0 +1,94 @@
+# depslib dependency file v1.0
+1589387839 source:/home/pi/JECCbot/main.cpp
+	"JECCbotServer.h"
+	"ECU.h"
+	"DataLogger.h"
+
+1589389737 /home/pi/JECCbot/include/JECCbotServer.h
+	<stdio.h>
+	<sys/socket.h>
+	<unistd.h>
+	<stdlib.h>
+	<netinet/in.h>
+	<string.h>
+	<thread>
+	<vector>
+	<system_error>
+	"Client.h"
+	"RobotCommand.h"
+
+1589391042 /home/pi/JECCbot/include/Client.h
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	<sys/socket.h>
+	<netinet/in.h>
+	<string.h>
+	<thread>
+	<vector>
+	<mutex>
+	<system_error>
+	"RobotCommand.h"
+	"HTTPDecoder.h"
+
+1589051330 /home/pi/JECCbot/include/RobotCommand.h
+
+1589051242 /home/pi/JECCbot/include/HTTPDecoder.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<string>
+	<fstream>
+	<iostream>
+	<sstream>
+	<fcntl.h>
+	<unistd.h>
+	<algorithm>
+	<iterator>
+	<time.h>
+
+1589392550 source:/home/pi/JECCbot/src/Client.cpp
+	"Client.h"
+
+1589380609 source:/home/pi/JECCbot/src/HTTPDecoder.cpp
+	"HTTPDecoder.h"
+
+1589391087 source:/home/pi/JECCbot/src/JECCbotServer.cpp
+	"JECCbotServer.h"
+
+1589391585 source:/home/pi/JECCbot/src/ECU.cpp
+	"ECU.h"
+
+1589387440 /home/pi/JECCbot/include/ECU.h
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	<thread>
+	<math.h>
+	<unistd.h>
+	<sys/types.h>
+	<sys/socket.h>
+	<netinet/in.h>
+	<fcntl.h>
+	<sys/signal.h>
+	<errno.h>
+	<termios.h>
+	<mutex>
+	<assert.h>
+	<string>
+	<signal.h>
+	"ECUProtocol.h"
+	"ECUBlobs.h"
+
+1589305549 /home/pi/JECCbot/include/ECUProtocol.h
+
+1589381035 source:/home/pi/JECCbot/src/DataLogger.cpp
+	"DataLogger.h"
+
+1589381028 /home/pi/JECCbot/include/DataLogger.h
+	<stdio.h>
+	<stdlib.h>
+	<string>
+
+1589381454 /home/pi/JECCbot/include/ECUBlobs.h
+

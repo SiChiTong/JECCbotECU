@@ -1,4 +1,4 @@
-7635856972802796
+7642452339353615
 CON_custom
 CON_TH_01x02_5.08
 
@@ -16391,15 +16391,15 @@ FRDM-KL25Z-header-bot
 surface-mounted straight pin header, 2x10, 2.54mm pitch, double rows
 Surface mounted pin header SMD 2x10 2.54mm double row
 0
-64
-20
+68
+68
 FRDM_KL25Z
 FRDM-KL25Z-header-top
 surface-mounted straight pin header, 2x10, 2.54mm pitch, double rows
 Surface mounted pin header SMD 2x10 2.54mm double row
 0
 64
-20
+64
 IC_sensor
 AMG88xx
 
@@ -33050,6 +33050,20 @@ potentiometers
 Potentiometer_Bourns_3339W_Angular_ScrewFront
 5/16, Round, Trimming, Potentiometer, Bourns, 3339
 5/16, Round, Trimming, Potentiometer, Bourns, 3339
+0
+3
+3
+potentiometers
+Potentiometer_Bourns_TC33X_Vertical
+Potentiometer, Bourns, TC33X, Vertical, https://www.bourns.com/pdfs/TC33.pdf
+Potentiometer Bourns TC33X Vertical
+0
+3
+3
+potentiometers
+Potentiometer_PTV09A-2
+Potentiometer, Alps, RK16, single, large Pads, RevA, 30 July 2010,
+Potentiometer, Alps, RK16, single, large Pads, RevA, 30 July 2010,
 0
 3
 3
