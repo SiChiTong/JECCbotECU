@@ -1,6 +1,6 @@
 # JECCbotECU
 
-This Repository contains everything for controlling the JECCbot mini ( https://github.com/generationmake/JECCbot_mini ) with a the JECCbotECU board. There is also included software with web frontend for a Raspberry Pi, to move the robot to GPS waypoints.
+This Repository contains everything about controlling the JECCbot mini ( https://github.com/generationmake/JECCbot_mini ) with a the JECCbotECU board. There is also included software with web frontend for a Raspberry Pi, to move the robot to GPS waypoints.
 
 ## Hardware
 
