@@ -26,7 +26,7 @@ The ECU Software is written in C using the STM32 Cube HAL hardware abstraction l
 
 Here You can see the configured pinout of the STM32F103C8T6 mikrocontroller, which is compatible to STM32 Bluepill evalboard:
 
-
+![JECCbotECU pinout](hardware/controlpcb/productiondata/pinout.png)
 
 #### Computer interaction
 
@@ -105,3 +105,8 @@ Every error code starts with the command e and has a specific index ( %03d ) as 
 #### KVH Terminal
 
 There is also a program included that lets the ECU act as a terminal to a connected KVH C100 compass unit. This can be used for calibrating the compass.
+
+### Raspberry Pi
+
+The main sotware used in the demonstration for Istrobot 2020 ( https://www.youtube.com/watch?v=Fceis1Gl848 ) is also included.
+In the html folder You can find the frontend design with commands to the robot via HTML POST.
