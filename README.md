@@ -30,7 +30,7 @@ Here You can see the configured pinout of the STM32F103C8T6 mikrocontroller, whi
 
 #### Computer interaction
 
-The ECU can be interact with computer by using USB and a state based api.
+The ECU can interact with computer by using USB and a state based api.
 
 ##### Description of implemented states
 
@@ -48,7 +48,7 @@ The protocol is leaned on ASCII-Modbus and is register based.
 
 Every protocol instruction message begins with ```:```, which is followed with a 8 bit instructor. Then there is a 16 bit hex register address and a 16 bit or 32 bit hex register value ( interpreted as signed int ). Every message ends with ```\n```: 
 
-```:<02/ 04><hex address><hex value>\n```
+```:<instructor><hex address><hex value>\n```
 
 The mikrocontroller answers with ```:```, the register, value and ```\n```;
 
