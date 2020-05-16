@@ -7,3 +7,6 @@ This Repository contains everything for controlling the JECCbot mini ( https://g
 The JECCbotECU is formed from the controller board ( data included in this repository ) and some motor driver stage ( e. g. https://github.com/generationmake/HighPowerMotorFeatherWing/ ).
 
 ![JECCbotECU rendering](hardware/controlpcb/productiondata/JECCbotECU.jpg)
+
+![JECCbotECU with HighpowerMotorFeatherwing](hardware/controlpcb/productiondata/completeUnit.png)
+
