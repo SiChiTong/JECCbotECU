@@ -101,3 +101,7 @@ Every error code starts with the command e and has a specific index ( %03d ) as 
 | 000 | received data is no command |
 | 001 | Command is not found |
 | 002 | Syntax error in command |
+
+#### KVH Terminal
+
+There is also a program included that lets the ECU act as a terminal to a connected KVH C100 compass unit. This can be used for calibrating the compass.
