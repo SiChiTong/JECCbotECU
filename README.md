@@ -6,7 +6,7 @@ This Repository contains everything about controlling the JECCbot mini ( https:/
 
 ### PCB
 
-The JECCbotECU is formed from the controller board ( data included in this repository ) and some motor driver stage ( tested with https://github.com/generationmake/HighPowerMotorFeatherWing/ ). The controller pcb in this repository features a Bosch BNO055 IMU the connection of a KVH C100 compass unit, GPS and RPLidar, USB VCOMM, different voltage regulators, GPIO port and SW-Debugging.
+The JECCbotECU is formed from the controller board ( data included in this repository ) and some motor driver stage ( tested with https://github.com/generationmake/HighPowerMotorFeatherWing/ ). The controller pcb in this repository features a Bosch BNO055 IMU, the connection of a KVH C100 compass unit, GPS and RPLidar, USB VCOMM, different voltage regulators, GPIO port and SW-Debugging.
 
 ![JECCbotECU rendering](hardware/controlpcb/productiondata/JECCbotECU.jpg)
 
