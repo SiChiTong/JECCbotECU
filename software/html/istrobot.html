@@ -1,0 +1,88 @@
+<html>
+<head>
+<script>
+	function reload()
+	{
+		document.getElementById('nmeaData').src = 'nmeaData.txt?' + Math.random();
+	}
+</script>
+
+<title>Istrobot</title>
+
+</head>
+
+<body style="background-color:grey;">
+
+	<script>
+		window.setInterval(reload, 500);
+	</script>
+
+	<h1>JECCbot Istrobot 2020 Demo</h1>
+	<p>
+		<a href="index.html"> Home </a>
+	</p>
+	<h2>Manual Control</h2>
+	<p style="float: left">
+		<table>
+			<tr>
+				<td></td>
+				<td>
+					<form action="" method="post">
+					<button name="joydrive" value="up" style="height:100px;width:100px">+</button>
+					</form>
+				</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>
+					<form action="" method="post">
+					<button name="joydrive" value="left" style="height:100px;width:100px"><</button>
+					</form>
+				</td>
+				<td>
+					<form action="" method="post">
+					<button name="joydrive" value="stop" style="height:100px;width:100px">STOP</button>
+					</form>
+				</td>
+				<td>
+					<form action="" method="post">
+					<button name="joydrive" value="right" style="height:100px;width:100px">></button>
+					</form>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<form action="" method="post">
+					<button name="joydrive" value="down" style="height:100px;width:100px">-</button>
+					</form>
+				</td>
+				<td></td>
+			</tr>
+		</table>
+	</p>		
+	<h2>Autonoumous Control</h2>
+	<p style="float: left">
+		<table>
+			<tr>
+				<td>
+					<form action="" method="post">
+					<button name="control" value="start" style="height:200px;width:200px;background-color:green">START</button>
+					</form>
+				</td>
+
+				<td>
+					<form action="" method="post">
+					<button name="control" value="stop" style="height:200px;width:200px;background-color:red">STOP</button>
+					</form>
+				</td>
+			</tr>
+		</table>
+	</p>
+	<h2>NMEA data</h2>
+	<p style="float: left;text-align:center;">	
+		<iframe src = "nmeaData.txt", id="nmeaData"></iframe>
+	</p>
+	
+</body>
+</html>
