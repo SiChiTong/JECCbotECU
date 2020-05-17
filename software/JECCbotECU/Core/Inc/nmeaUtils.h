@@ -17,7 +17,7 @@
 #include "apiConfiguration.h"
 #include "api.h"
 
-#define NMEA_STR_LEN 200
+#define NMEA_STR_LEN 80
 
 #define NMEA_HCHDT_LEN 19
 #define NMEA_GPRMC_LEN 72

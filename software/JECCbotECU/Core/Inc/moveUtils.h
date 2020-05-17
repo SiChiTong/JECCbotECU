@@ -9,15 +9,12 @@
 #define INC_MOVEUTILS_H_
 
 #include "api.h"
+//#include "geoUtils.h"
 
 #define MOVEUTILS_SPEEDMAX 0x7fff
 
-extern uint16_t p;
-extern int16_t speed;
-extern int16_t headingDest;
-extern int16_t headingCurrent;
-extern int16_t offset;
-
 void moveHeading();
+
+//void moveGPS();
 
 #endif /* INC_MOVEUTILS_H_ */

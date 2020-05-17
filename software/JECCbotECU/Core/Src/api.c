@@ -65,6 +65,10 @@ ApiInstruction apiUpdate()
 					{
 						apiInstruction.responseLen = sprintf(apiInstruction.response, "%04x%04x\n", address, apiMemory[address]);
 					}
+					else if(API_INSTRUCTION_READ32 == instructor && (address + 1) < API_MEMORY_SIZE)
+					{
+						apiInstruction.responseLen = sprintf(apiInstruction.response, "%04x%08x\n", address, apiRead32(address));
+					}
 					else if(API_INSTRUCTION_WRITE == instructor)
 					{
 						if(apiWriteables[address])
@@ -80,6 +84,32 @@ ApiInstruction apiUpdate()
 							apiMemory[address] = value;
 
 							apiInstruction.responseLen = sprintf(apiInstruction.response, "%04x%04x\n", address, apiMemory[address]);
+						}
+						else
+						{
+							apiInstruction.responseLen = sprintf(apiInstruction.response, "e%04x\n", API_ERROR_ACCESS_DENIED);
+						}
+					}
+					else if(API_INSTRUCTION_WRITE32 == instructor && (address + 1) < API_MEMORY_SIZE)
+					{
+						if(apiWriteables[address])
+						{
+							char valueStr1[5];
+							char valueStr2[5];
+							uint16_t value1, value2;
+
+							strncpy(valueStr1, &apiInstruction.command[7], 4);
+							valueStr1[4] = '\0';
+							value1 = strtol(valueStr1, NULL, 16);
+
+							strncpy(valueStr2, &apiInstruction.command[11], 4);
+							valueStr2[4] = '\0';
+							value2 = strtol(valueStr2, NULL, 16);
+
+							apiMemory[address] = value2;
+							apiMemory[address + 1] = value1;
+
+							apiInstruction.responseLen = sprintf(apiInstruction.response, "%04x%08x\n", address, apiRead32(address));
 						}
 						else
 						{
@@ -122,7 +152,7 @@ bool isApiAddressValid(int address)
 	}
 }
 
-bool apiWrite16(int address, int16_t value)
+bool apiWrite16(int address, uint16_t value)
 {
 	if(isApiAddressValid(address))
 	{
@@ -135,19 +165,19 @@ bool apiWrite16(int address, int16_t value)
 	}
 }
 
-int16_t apiRead16(int address)
+uint16_t apiRead16(int address)
 {
-	int16_t val = -1;
+	uint16_t val = -1;
 
 	if(isApiAddressValid(address))
 	{
-		memcpy(&val, &apiMemory[address], 4);
+		memcpy(&val, &apiMemory[address], 2);
 	}
 
 	return val;
 }
 
-bool apiWrite32(int address, int32_t value)
+bool apiWrite32(int address, uint32_t value)
 {
 	if(isApiAddressValid(address))
 	{
@@ -160,9 +190,9 @@ bool apiWrite32(int address, int32_t value)
 	}
 }
 
-int32_t apiRead32(int address)
+uint32_t apiRead32(int address)
 {
-	int32_t val = -1;
+	uint32_t val = -1;
 
 	if(isApiAddressValid(address))
 	{

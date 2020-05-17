@@ -39,11 +39,11 @@ ApiInstruction apiUpdate();
 
 bool isApiAddressValid(int address);
 
-bool apiWrite16(int address, int16_t value);
-int16_t apiRead16(int address);
+bool apiWrite16(int address, uint16_t value);
+uint16_t apiRead16(int address);
 
-bool apiWrite32(int address, int32_t value);
-int32_t apiRead32(int address);
+bool apiWrite32(int address, uint32_t value);
+uint32_t apiRead32(int address);
 
 bool apiWriteFloat(int address, float value);
 float apiReadFloat(int address);

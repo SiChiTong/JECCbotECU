@@ -1,4 +1,5 @@
 "Core/Src/api.o"
+"Core/Src/geoUtils.o"
 "Core/Src/main.o"
 "Core/Src/moveUtils.o"
 "Core/Src/nmeaUtils.o"

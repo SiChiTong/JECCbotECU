@@ -14,6 +14,8 @@ int16_t offset;
 
 void moveHeading()
 {
+
+
 	p = apiMemory[API_REG_MOVEHEADING_P];
 	speed = apiMemory[API_REG_MOVEHEADING_SPEED];
 	headingDest = apiMemory[API_REG_MOVEHEADING_HEADING];
@@ -49,3 +51,8 @@ void moveHeading()
 	  apiWrite16(API_REG_PWMRIGHT, right);
 }
 
+//void moveGPS()
+//{
+//	  geoDistanceAndHeadingToApi();
+//	  moveHeading();
+//}

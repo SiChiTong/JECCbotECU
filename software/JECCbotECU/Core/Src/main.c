@@ -82,10 +82,6 @@ void gpsInit();
 void gpsFetch();
 void gpsDecode();
 
-float latitude, longitude;
-uint32_t time;
-int heading;
-
 void insertSensordataToApi();
 /* USER CODE END PFP */
 
@@ -160,9 +156,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  ApiInstruction ins = apiUpdate();
+
 	  insertSensordataToApi();
 
-	  ApiInstruction ins = apiUpdate();
 	  if(ins.responseLen > 0)
 	  {
 		  CDC_Transmit_FS(ins.response, ins.responseLen);
@@ -177,11 +174,12 @@ int main(void)
 		  moveHeading();
 		  powertrainSetSpeeds(apiMemory[API_REG_PWMLEFT], apiMemory[API_REG_PWMRIGHT]);
 	  }
+//	  else if(API_STATE_MOVEGPS == apiMemory[API_REG_STATE])
+//	  {
+//		  moveGPS();
+//		  powertrainSetSpeeds(apiMemory[API_REG_PWMLEFT], apiMemory[API_REG_PWMRIGHT]);
+//	  }
 
-	  heading = apiMemory[API_REG_HEADING_KVH];
-	  time = apiRead32(API_BENCH_GPS_START);
-	  latitude = apiReadFloat(API_BENCH_GPS_START+2);
-	  longitude = apiReadFloat(API_BENCH_GPS_START +4);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -582,7 +580,7 @@ void kvhFetch()
 		else
 		{
 			startFound = true;
-			HAL_UART_Receive_IT(&huart1, &kvhString.nmeaStr[1], NMEA_STR_LEN - 1);
+			HAL_UART_Receive_IT(&huart1, &kvhString.nmeaStr[1], NMEA_STR_LEN - 2);
 		}
 	}
 	else
@@ -623,7 +621,7 @@ void gpsFetch()
 		else
 		{
 			startFound = true;
-			HAL_UART_Receive_IT(&huart3, &gpsString.nmeaStr[1], NMEA_STR_LEN - 1);
+			HAL_UART_Receive_IT(&huart3, &gpsString.nmeaStr[1], NMEA_STR_LEN - 2);
 		}
 	}
 	else
