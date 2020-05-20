@@ -1,5 +1,8 @@
 # JECCbotECU
 
+See Istrobot 2020 demo video of JECCbot mini with JECCbotECU: https://www.youtube.com/watch?v=Fceis1Gl848
+solvin task of https://robotika.vosrk.cz/roboorienteering/index.php?year=2020&page=aktuality .
+
 This Repository contains everything about controlling the JECCbot mini ( https://github.com/generationmake/JECCbot_mini ) with a the JECCbotECU board. There is also included software with web frontend for a Raspberry Pi, to move the robot to GPS waypoints.
 
 ## Hardware
