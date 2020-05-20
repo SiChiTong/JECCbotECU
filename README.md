@@ -112,4 +112,4 @@ There is also a program included that lets the ECU act as a terminal to a connec
 ### Raspberry Pi
 
 The main sotware used in the demonstration for Istrobot 2020 ( https://www.youtube.com/watch?v=Fceis1Gl848 ) is also included as a Codeblocks project.
-In the html folder You can find the frontend design with commands to the robot via HTML POST.
+In the html folder You can find the frontend design with commands to the robot via HTTP POST.
